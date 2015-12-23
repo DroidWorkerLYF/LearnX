@@ -17,14 +17,14 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
 
 `DecorView`由窗口尺寸和自身`LayoutParams`决定MeasureSpec,`View`由父容器和自身`LayoutParams`决定  
 
-#DecorView#
+#DecorView确定MeasureSpec#
 	private boolean measureHierarchy(final View host, final WindowManager.LayoutParams lp,
             final Resources res, final int desiredWindowWidth, final int desiredWindowHeight) {
 		boolean goodMeasure = false;
         if (lp.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
         	//math_parent不执行这里,dialog会走这里
         }
-      
+
       	if (!goodMeasure) {
             childWidthMeasureSpec = getRootMeasureSpec(desiredWindowWidth, lp.width);
             childHeightMeasureSpec = getRootMeasureSpec(desiredWindowHeight, lp.height);
@@ -34,3 +34,38 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
             }
         }
 	}
+
+	/**
+     * Figures out the measure spec for the root view in a window based on it's
+     * layout params.
+     *
+     * @param windowSize
+     *            The available width or height of the window
+     *
+     * @param rootDimension
+     *            The layout params for one dimension (width or height) of the
+     *            window.
+     *
+     * @return The measure spec to use to measure the root view.
+     */
+    private static int getRootMeasureSpec(int windowSize, int rootDimension) {
+        int measureSpec;
+        switch (rootDimension) {
+
+        case ViewGroup.LayoutParams.MATCH_PARENT:
+            // Window can't resize. Force root view to be windowSize.
+            measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.EXACTLY);
+            break;
+        case ViewGroup.LayoutParams.WRAP_CONTENT:
+            // Window can resize. Set max size for root view.
+            measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.AT_MOST);
+            break;
+        default:
+            // Window wants to be an exact size. Force root view to be that size.
+            measureSpec = MeasureSpec.makeMeasureSpec(rootDimension, MeasureSpec.EXACTLY);
+            break;
+        }
+        return measureSpec;
+    }
+
+#普通View确定MeasureSpec#
