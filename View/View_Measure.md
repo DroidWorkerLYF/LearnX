@@ -3,7 +3,7 @@
 The top of a view hierarchy, implementing the needed protocol between View and the WindowManager.  This is for the most part an internal implementation detail of {@link WindowManagerGlobal}.  
 
 view的绘制流程从ViewRoot的performTraversals方法开始:
-![ViewRootImpl_performTraversals](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/ViewRootImpl_performTraversals.jpg?raw=true)
+![ViewRootImpl_performTraversals](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/pic/ViewRootImpl_performTraversals.jpg?raw=true)
 
 Measure完成后,getMeasuredWidth,getMeasuredHeight获取测量后的宽高,基本就是最终的宽高
 Layout完成后,可以get到顶点位置,并且getWidth和getHeight可以拿到了
@@ -189,7 +189,7 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
         }
         return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
     }
-![普通View的MeasureSpec创建规则](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/%E6%99%AE%E9%80%9AView%E7%9A%84MeasureSpec%E5%88%9B%E5%BB%BA%E8%A7%84%E5%88%99.jpg?raw=true)
+![普通View的MeasureSpec创建规则](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/pic/%E6%99%AE%E9%80%9AView%E7%9A%84MeasureSpec%E5%88%9B%E5%BB%BA%E8%A7%84%E5%88%99.jpg?raw=true)
 总结:DecorView的MeasureSpec是由窗口大小和自身的LayoutParams决定的,普通的view是由父容器的MeasureSpec和自身的LayoutParams决定的
 
 #View工作流程
@@ -232,7 +232,7 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
     }
 自定义视图在使用wrap_content的时候,相当于case MeasureSpec.AT_MOST:,这时候测量值就和match_parent的效果一样了,所以要自己处理wrap_content,处理方式大致如下:  
 
-![onMeasure处理](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/onMeasure%E5%A4%84%E7%90%86.jpg?raw=true)
+![onMeasure处理](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/pic/onMeasure%E5%A4%84%E7%90%86.jpg?raw=true)
 
 ###ViewGroup的Measure
 
