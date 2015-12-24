@@ -1,4 +1,4 @@
-#ViewRootImpl#
+#ViewRootImpl
 
 The top of a view hierarchy, implementing the needed protocol between View and the WindowManager.  This is for the most part an internal implementation detail of {@link WindowManagerGlobal}.  
 
@@ -6,9 +6,9 @@ view的绘制流程从ViewRoot的performTraversals方法开始:
 ![ViewRootImpl_performTraversals](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/ViewRootImpl_performTraversals.jpg?raw=true)
 
 Measure完成后,getMeasuredWidth,getMeasuredHeight获取测量后的宽高,基本就是最终的宽高
-Layout完成后,可以get到顶点位置,并且getWidth和getHeight可以拿到了  
+Layout完成后,可以get到顶点位置,并且getWidth和getHeight可以拿到了
 
-#MeasureSpec#
+#MeasureSpec
 
 MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize  
 `UNSPECIFIED`:父容器无限制,要多就多大  
@@ -17,8 +17,8 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
 
 `DecorView`由窗口尺寸和自身`LayoutParams`决定MeasureSpec,`View`由父容器和自身`LayoutParams`决定  
 
-#DecorView确定MeasureSpec#
-在`ViewRootImpl`中  
+##DecorView确定MeasureSpec
+在`ViewRootImpl`中
 
 	private boolean measureHierarchy(final View host, final WindowManager.LayoutParams lp,
             final Resources res, final int desiredWindowWidth, final int desiredWindowHeight) {
@@ -70,7 +70,8 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
         return measureSpec;
     }
 
-#普通View确定MeasureSpec#  
+##普通View确定MeasureSpec
+
 `ViewGroup`中`measureChildWithMargins`,通过`getChildMeasureSpec`得到子元素的MeasureSpec,
 	/**
      * Ask one of the children of this view to measure itself, taking into
@@ -187,12 +188,14 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
         }
         return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
     }
-![此处有一表格](回家上传)  
+![普通View的MeasureSpec创建规则](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/%E6%99%AE%E9%80%9AView%E7%9A%84MeasureSpec%E5%88%9B%E5%BB%BA%E8%A7%84%E5%88%99.jpg?raw=true)
 总结:DecorView的MeasureSpec是由窗口大小和自身的LayoutParams决定的,普通的view是由父容器的MeasureSpec和自身的LayoutParams决定的
 
-#View工作流程  
-##Viewd的Measure  
-`measure`方法本final修饰,是无法更改的,我们要处理的是`onMeasure`,  
+#View工作流程
+##Measure
+###View的Measure
+
+`measure`方法本final修饰,是无法更改的,我们要处理的是`onMeasure`,
 
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
@@ -227,4 +230,30 @@ MeasureSpec:32为int值,高2位代表SpecMode,低30位代表SpecSize
         return result;
     }
 自定义视图在使用wrap_content的时候,相当于case MeasureSpec.AT_MOST:,这时候测量值就和match_parent的效果一样了,所以要自己处理wrap_content,处理方式大致如下:  
-![]()
+
+![onMeasure处理](https://github.com/DroidWorkerLYF/LearnX/blob/master/View/onMeasure%E5%A4%84%E7%90%86.jpg?raw=true)
+
+###ViewGroup的Measure
+
+通过`measureChildren`调用`measureChild`,
+
+	protected void measureChild(View child, int parentWidthMeasureSpec,
+            int parentHeightMeasureSpec) {
+        final LayoutParams lp = child.getLayoutParams();
+		//还是调用 getChildMeasureSpec
+        final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+                mPaddingLeft + mPaddingRight, lp.width);
+        final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+                mPaddingTop + mPaddingBottom, lp.height);
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+没有统一处理`onMeasure`,因为不同的ViewGroup处理方式不同  
+
+View的measure过程和activity生命周期不同,所以,比如activity启动时,我需要处理和view宽高有关的东西时,可用如下方法:
+- onWindowFocusChanged
+- view.posr(runnable)
+- ViewTreeObserver#OnGlobalLayoutListener
+
+###layout
+
