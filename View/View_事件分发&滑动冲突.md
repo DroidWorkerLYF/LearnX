@@ -136,3 +136,11 @@ dispatchTransformedTouchEvent中，child == null，就会将此viewgroup当成�
             
 TouchListener的优先级高于onTouchEvent，  
 
+#滑动冲突
+1. 内外部方向不一致
+2. 内外部方向一致
+3. 1和2综合
+
+##解决方法
+1. 在父容器中拦截，重写onInterceptTouchEvent，ACTION\_DOWN返回false，ACTION\_MOVE根据需求返回值，ACTION\_UP返回false，ACTION\_UP返回true会导致子view的onClick无法触发，而只要父容器拦截了事件，那么一些列事件都会传递给父容器，包括ACTION\_UP，所以ACTION\_UP可以返回false
+2. 在子view中，使用requestDisallowInterceptTouchEvent，并且父容器的onInterceptTouchEvent中ACTION\_DOWN要返回false。
