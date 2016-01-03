@@ -12,7 +12,8 @@
 			consume = child.dispatchTouchEvent(ev);
 		}
 		return consume;
-	}
+	}  
+activity -> windows -> view
 
 ##Activity分发
 	public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -31,7 +32,7 @@
 		return mDecor.superDispatchTouchEvent(ev);
 	}
 	
-##View分发
+##ViewGroup分发
 	// Handle an initial down.
     if (actionMasked == MotionEvent.ACTION_DOWN) {
         // Throw away all previous state when starting a new touch gesture.
@@ -57,10 +58,10 @@
         intercepted = true;
         }
         
-FLAG\_DISALLOW\_INTERCEPT由子view的requestDisallowInterceptTouchEvent设置，导致ViewGroup无法拦截ACTION_DOWN以外的事件，唯有ACTION_DOWN时，会resetTouchState(),将会还原FLAG\_DISALLOW\_INTERCEPT，  
+FLAG\_DISALLOW\_INTERCEPT由子view的requestDisallowInterceptTouchEvent设置，导致ViewGroup无法拦截ACTION\_DOWN以外的事件，唯有ACTION\_DOWN时，会resetTouchState(),将会还原FLAG\_DISALLOW\_INTERCEPT，  
 onInterceptTouchEvent也将因此无法保证每次都调用，只有dispatchTouchEvent会保证每次调用。  
 
-final View[] children = mChildren;
+	final View[] children = mChildren;
         for (int i = childrenCount - 1; i >= 0; i--) {
             final int childIndex = customOrder
                     ? getChildDrawingOrder(childrenCount, i) : i;
@@ -119,3 +120,19 @@ final View[] children = mChildren;
             // the flag and do a normal dispatch to all children.
             ev.setTargetAccessibilityFocus(false);
         }
+ 
+dispatchTransformedTouchEvent中，child == null，就会将此viewgroup当成普通view，调用super.dispatchTouchEvent，否则调用child的dispatchTouchEvent。  
+
+##View分发
+			if (li != null && li.mOnTouchListener != null
+                    && (mViewFlags & ENABLED_MASK) == ENABLED
+                    && li.mOnTouchListener.onTouch(this, event)) {
+                result = true;
+            }
+
+            if (!result && onTouchEvent(event)) {
+                result = true;
+            }
+            
+TouchListener的优先级高于onTouchEvent，  
+
