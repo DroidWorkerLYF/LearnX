@@ -1,0 +1,2 @@
+#ThreadLocal
+当某些数据是以线程为作用域并且不同线程具有不同的副本时，可以考虑使用ThreadLocal
