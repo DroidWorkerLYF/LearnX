@@ -1,0 +1,159 @@
+## LeakCanary
+
+A memory leak detection library for Android and Java.
+
+## 1.配置使用
+在`build.gradle`中配置
+
+```
+ dependencies {
+   debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+   releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+   testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+ }
+```
+
+在`Application`中
+
+```
+public class ExampleApplication extends Application {
+
+  @Override public void onCreate() {
+    super.onCreate();
+    if (LeakCanary.isInAnalyzerProcess(this)) {
+      // This process is dedicated to LeakCanary for heap analysis.
+      // You should not init your app in this process.
+      return;
+    }
+    LeakCanary.install(this);
+    // Normal app init code...
+  }
+}
+```
+
+至此，`Activity`的内存泄露就会被检测
+
+## 2.工作流程
+
+`LeakCanary.install(this).watch(this, "application");`   
+`LeakCancary`的`install`方法会返回一个`RefWatcher`对象，该对象对外提供了
+
+1. `public void watch(Object watchedReference)`
+2. `public void watch(Object watchedReference, String referenceName)`
+
+```
+	if (this == DISABLED) {
+      return;
+    }
+    checkNotNull(watchedReference, "watchedReference");
+    checkNotNull(referenceName, "referenceName");
+    final long watchStartNanoTime = System.nanoTime();
+    String key = UUID.randomUUID().toString();
+    retainedKeys.add(key);
+    final KeyedWeakReference reference =
+        new KeyedWeakReference(watchedReference, key, referenceName, queue);
+
+    ensureGoneAsync(watchStartNanoTime, reference);
+```
+
+方法生成了watch开始的时间,唯一对应的key，并且new了一个`KeyedWeakReference`，然后执行了`ensureGoneAsync(final long watchStartNanoTime, 
+final KeyedWeakReference reference)`。
+
+[毫微秒 nano time](http://www.cnblogs.com/whyhappy/p/5404725.html)
+
+### 2.1 KeyedWeakReference
+继承自`WeakReference<Object>`，存储之前生成的key和referenceName。对应于`HeapDump`中的referenceKey和referenceName。当分析一个heap dump时，会查找所有`KeyedWeakReference`实例，然后找到对应key值的对象，这样就找到了泄露的对象，然后就可以计算最短GC roots。
+
+### 2.2 HeapDump
+[Heap Dump](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.mat.ui.help%2Fconcepts%2Fheapdump.html) is a snapshot of the memory of a Java process at a certain point of time.  
+在LeakCanary中的`HeapDump`类是负责存储Heap Dump信息的数据结构。
+
+```
+  /** The heap dump file, which you might want to upload somewhere. */
+  public final File heapDumpFile;
+  public final String referenceKey;
+  public final String referenceName;
+  // References that should be ignored when analyzing this heap dump. */
+  public final ExcludedRefs excludedRefs;
+  /** Time from the request to watch the reference until the GC was triggered. */
+  public final long watchDurationMs;
+  public final long gcDurationMs;
+  public final long heapDumpDurationMs;
+```
+
+### 2.3 WatchExecutor
+接下来看到`ensureGoneAsync`方法：
+```
+private void ensureGoneAsync(final long watchStartNanoTime, final KeyedWeakReference reference) {
+    watchExecutor.execute(new Retryable() {
+      @Override public Retryable.Result run() {
+        return ensureGone(reference, watchStartNanoTime);
+      }
+    });
+  }
+```
+watchExecutor是一个`WatchExecutor`的实例，`WatchExecutor`是一个接口，定义了一个`void execute(Retryable retryable)`方法，负责执行或者重试一个`Retryable`
+
+### 2.4 Retryable
+`Retryable`也是一个接口，代表一个任务，有DONE和RETRY两种状态和一个run方法。
+
+### 2.5 
+```
+Retryable.Result ensureGone(final KeyedWeakReference reference, final long watchStartNanoTime) {
+    long gcStartNanoTime = System.nanoTime();
+    long watchDurationMs = NANOSECONDS.toMillis(gcStartNanoTime - watchStartNanoTime);
+
+    removeWeaklyReachableReferences();
+
+    if (debuggerControl.isDebuggerAttached()) {
+      // The debugger can create false leaks.
+      return RETRY;
+    }
+    if (gone(reference)) {
+      return DONE;
+    }
+    gcTrigger.runGc();
+    removeWeaklyReachableReferences();
+    if (!gone(reference)) {
+      long startDumpHeap = System.nanoTime();
+      long gcDurationMs = NANOSECONDS.toMillis(startDumpHeap - gcStartNanoTime);
+
+      File heapDumpFile = heapDumper.dumpHeap();
+      if (heapDumpFile == RETRY_LATER) {
+        // Could not dump the heap.
+        return RETRY;
+      }
+      long heapDumpDurationMs = NANOSECONDS.toMillis(System.nanoTime() - startDumpHeap);
+      heapdumpListener.analyze(
+          new HeapDump(heapDumpFile, reference.key, reference.name, excludedRefs, watchDurationMs,
+              gcDurationMs, heapDumpDurationMs));
+    }
+    return DONE;
+  }
+```
+在实际执行的`ensureGone`方法中：
+  
+1. 计算出gc开始时间以及watch时常
+2. 然后移除所有弱引用
+3. 如果判断链接了debugger，则返回结果为RETRY
+4. 如果引用移除了，则返回DONE
+5. 触发gc
+6. 再次移除弱引用
+7. 再次判断是否对象还被强引用，如果是，则开启分析HeapDump，否则返回DONE
+
+以上过程涉及到了其他一些接口。
+
+### 2.6 DebuggerControl
+如果debugger is connected，则可能debugger会持有对象引用，导致假的内存泄露。DebuggerControl是一个接口，提供一个`boolean isDebuggerAttached()`方法
+
+### 2.7 GcTrigger
+也是一个接口，默认提供了一个来自AOSP的实现，`GcTrigger`提供了一个在检查引用队列之前触发gc的机会
+
+### 2.8 HeapDumper
+仍然是一个接口，会返回HeapDump对应的文件.
+
+### 2.9 ExcludedRefs
+可以添加一些我们已知的泄露，以避免计算最短强引用时被使用，可以排除一些系统已知的内存泄露等。
+
+
+## 3.代码分析
