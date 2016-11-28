@@ -83,6 +83,7 @@ final KeyedWeakReference reference)`。
 
 ### 2.3 WatchExecutor
 接下来看到`ensureGoneAsync`方法：
+
 ```
 private void ensureGoneAsync(final long watchStartNanoTime, final KeyedWeakReference reference) {
     watchExecutor.execute(new Retryable() {
