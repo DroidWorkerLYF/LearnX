@@ -234,3 +234,120 @@ void waitForIdle(final Retryable retryable, final int failedAttempts) {
   }
 ```
 当Looper空闲时，触发`postToBackgroundWithDelay`，执行之前传入的`Retryable`，也就是我们上文写到的`ensureGone`。
+
+### 3.3 AndroidHeapDumper
+之前流程中，通过`HeapDumper`获取HeapDump的文件，接下来，我们看一下具体的实现：
+
+```
+@Override protected HeapDumper defaultHeapDumper() {
+    LeakDirectoryProvider leakDirectoryProvider = new DefaultLeakDirectoryProvider(context);
+    return new AndroidHeapDumper(context, leakDirectoryProvider);
+  }
+```
+构建一个默认的`HeapDumper`。
+
+```
+@Override public File dumpHeap() {
+    File heapDumpFile = leakDirectoryProvider.newHeapDumpFile();
+
+    if (heapDumpFile == RETRY_LATER) {
+      return RETRY_LATER;
+    }
+
+    FutureResult<Toast> waitingForToast = new FutureResult<>();
+    showToast(waitingForToast);
+
+    if (!waitingForToast.wait(5, SECONDS)) {
+      CanaryLog.d("Did not dump heap, too much time waiting for Toast.");
+      return RETRY_LATER;
+    }
+
+    Toast toast = waitingForToast.get();
+    try {
+      Debug.dumpHprofData(heapDumpFile.getAbsolutePath());
+      cancelToast(toast);
+      return heapDumpFile;
+    } catch (Exception e) {
+      CanaryLog.d(e, "Could not dump heap");
+      // Abort heap dump
+      return RETRY_LATER;
+    }
+  }
+```
+在`ensureGone`方法中会调用`heapDump`，如果等待toast的时间过长，会放弃这一次执行，RETRY_LATER，否则会dump hprof数据并取消toast。
+
+#### 3.3.1 LeakDirectoryProvider
+Provides access to where heap dumps and analysis results will be stored.我们可以自己实现这个接口，然后调用LeakCanary.`setDisplayLeakActivityDirectoryProvider(LeakDirectoryProvider)`
+
+#### 3.3.2 DefaultLeakDirectoryProvider
+```
+private File externalStorageDirectory() {
+    File downloadsDirectory = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
+    return new File(downloadsDirectory, "leakcanary-" + context.getPackageName());
+  }
+
+  private File appStorageDirectory() {
+    File appFilesDirectory = context.getFilesDir();
+    return new File(appFilesDirectory, "leakcanary");
+  }
+```
+会读取以上两个目录的文件，并且以_pending.hprof作为筛选条件。其他细节不多说。
+
+### 3.4 ServiceHeapDumpListener
+在`analyze`方法中调用`HeapAnalyzerService.runAnalysis`。
+
+#### 3.4.1 HeapAnalyzerService
+```
+@Override protected void onHandleIntent(Intent intent) {
+    if (intent == null) {
+      CanaryLog.d("HeapAnalyzerService received a null intent, ignoring.");
+      return;
+    }
+    String listenerClassName = intent.getStringExtra(LISTENER_CLASS_EXTRA);
+    HeapDump heapDump = (HeapDump) intent.getSerializableExtra(HEAPDUMP_EXTRA);
+
+    HeapAnalyzer heapAnalyzer = new HeapAnalyzer(heapDump.excludedRefs);
+
+    AnalysisResult result = heapAnalyzer.checkForLeak(heapDump.heapDumpFile, heapDump.referenceKey);
+    AbstractAnalysisResultService.sendResultToListener(this, listenerClassName, heapDump, result);
+  }
+```
+
+`HeapAnalyzerService`是一个`IntentService`，会创建一个`HeapAnalyzer`来`checkForLeak`，这里就是用到了`leakcanary-analyzer`module中的东西了，LeakCanary是使用一个叫HAHA的东西来分析，这里就不介绍了，感兴趣的自己了解吧。因为我也没了解过。分析完的结果是一个`AnalysisResult`
+
+#### 3.4.2 AbstractAnalysisResultService
+依然是个`IntentService`，
+
+```
+@Override protected final void onHandleIntent(Intent intent) {
+    HeapDump heapDump = (HeapDump) intent.getSerializableExtra(HEAP_DUMP_EXTRA);
+    AnalysisResult result = (AnalysisResult) intent.getSerializableExtra(RESULT_EXTRA);
+    try {
+      onHeapAnalyzed(heapDump, result);
+    } finally {
+      //noinspection ResultOfMethodCallIgnored
+      heapDump.heapDumpFile.delete();
+    }
+  }
+```
+
+```
+/**
+   * Called after a heap dump is analyzed, whether or not a leak was found.
+   * Check {@link AnalysisResult#leakFound} and {@link AnalysisResult#excludedLeak} to see if there
+   * was a leak and if it can be ignored.
+   *
+   * This will be called from a background intent service thread.
+   * <p>
+   * It's OK to block here and wait for the heap dump to be uploaded.
+   * <p>
+   * The heap dump file will be deleted immediately after this callback returns.
+   */
+  protected abstract void onHeapAnalyzed(HeapDump heapDump, AnalysisResult result);
+```
+
+#### 3.4.3 DisplayLeakService
+AbstractAnalysisResultService的实现类。在这里处理后就会弹出notification来通知我们点击查看，进入泄露结果的展示页面。
+
+## 4 结尾
+以上是大致整个的工作机制，很多细节没有多介绍，基本流程都有了
