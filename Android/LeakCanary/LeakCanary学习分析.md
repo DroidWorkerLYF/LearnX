@@ -1,5 +1,4 @@
 # LeakCanary
--
 
 A memory leak detection library for Android and Java.
 
@@ -357,7 +356,38 @@ AbstractAnalysisResultService的实现类。在这里处理后就会弹出notifi
 以上是大致整个的工作机制，很多细节没有多介绍，基本流程都有了。
 
 # 常见内存泄露
--
+* 集合类
+
+	```
+	Vector v = new Vector(10);
+	for (int i = 1; i < 100; i++) {
+	    Object o = new Object();
+	    v.add(o);
+	    o = null;   
+	}
+	```
+* 单列
+
+	```
+	public class AppManager {
+		private static AppManager instance;
+		private Context context;
+		private AppManager(Context context) {
+			this.context = context;
+		}
+		
+		public static AppManager getInstance(Context context) {
+			if (instance == null) {
+				instance = new AppManager(context);
+			}
+			return instance;
+		}
+	}
+	```
+* 匿名内部类/非静态内部类,异步线程
+* Handler 造成的内存泄漏
+* Sensor Manager
+
 
 ### 参考的文章
 [LeakCanary 内存泄露监测原理研究](http://www.jianshu.com/p/5ee6b471970e)  
