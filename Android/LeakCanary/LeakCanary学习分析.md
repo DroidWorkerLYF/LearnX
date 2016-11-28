@@ -31,11 +31,11 @@ public class ExampleApplication extends Application {
 }
 ```
 
-至此，`Activity`的内存泄露就会被检测
+至此，4.0以上的系统`Activity`的内存泄露就会被检测。
 
-## 2.工作流程
+## 2.LeakCanary wathcer
 
-`LeakCanary.install(this).watch(this, "application");`   
+`LeakCanary.install(this)`   
 `LeakCancary`的`install`方法会返回一个`RefWatcher`对象，该对象对外提供了
 
 1. `public void watch(Object watchedReference)`
@@ -56,7 +56,7 @@ public class ExampleApplication extends Application {
     ensureGoneAsync(watchStartNanoTime, reference);
 ```
 
-方法生成了watch开始的时间,唯一对应的key，并且new了一个`KeyedWeakReference`，然后执行了`ensureGoneAsync(final long watchStartNanoTime, 
+方法内生成了watch开始的时间,后边会用于计算，唯一对应的key，并且new了一个`KeyedWeakReference`，然后执行了`ensureGoneAsync(final long watchStartNanoTime, 
 final KeyedWeakReference reference)`。
 
 [毫微秒 nano time](http://www.cnblogs.com/whyhappy/p/5404725.html)
@@ -97,7 +97,7 @@ watchExecutor是一个`WatchExecutor`的实例，`WatchExecutor`是一个接口�
 ### 2.4 Retryable
 `Retryable`也是一个接口，代表一个任务，有DONE和RETRY两种状态和一个run方法。
 
-### 2.5 
+### 2.5 最核心的方法
 ```
 Retryable.Result ensureGone(final KeyedWeakReference reference, final long watchStartNanoTime) {
     long gcStartNanoTime = System.nanoTime();
@@ -133,21 +133,23 @@ Retryable.Result ensureGone(final KeyedWeakReference reference, final long watch
 ```
 在实际执行的`ensureGone`方法中：
   
-1. 计算出gc开始时间以及watch时常
+1. 计算出gc开始时间以及watch时长
 2. 然后移除所有弱引用
 3. 如果判断链接了debugger，则返回结果为RETRY
 4. 如果引用移除了，则返回DONE
-5. 触发gc
+5. 再次触发gc
 6. 再次移除弱引用
 7. 再次判断是否对象还被强引用，如果是，则开启分析HeapDump，否则返回DONE
+
+PS:每次WeakReference所指向的对象被GC后，这个弱引用都会被放入与之相关联的ReferenceQueue队列中。
 
 以上过程涉及到了其他一些接口。
 
 ### 2.6 DebuggerControl
-如果debugger is connected，则可能debugger会持有对象引用，导致假的内存泄露。DebuggerControl是一个接口，提供一个`boolean isDebuggerAttached()`方法
+如果链接了debugger，则可能debugger会持有对象引用，导致虚假的内存泄露。DebuggerControl是一个接口，提供一个`boolean isDebuggerAttached()`方法，使得我们可以跳过这个检查。
 
 ### 2.7 GcTrigger
-也是一个接口，默认提供了一个来自AOSP的实现，`GcTrigger`提供了一个在检查引用队列之前触发gc的机会
+也是一个接口，默认提供了一个来自AOSP的实现，`GcTrigger`提供了一个在检查引用队列之前触发gc的机会。`System.gc()`不会每次都执行垃圾回收，`Runtime.gc()`则是告诉系统现在是合适触发gc的时机。
 
 ### 2.8 HeapDumper
 仍然是一个接口，会返回HeapDump对应的文件.
@@ -166,7 +168,7 @@ Retryable.Result ensureGone(final KeyedWeakReference reference, final long watch
 看上面的截图，我们能发现很多眼熟的名字都是针对上面提到的接口的实现。而internal包里则是和展示结果相关的。
 
 ### 3.1 初始化
-我们回到ExampleApplication中，install中实际使用`AndroidRefWatcherBuilder`创建了一个`RefWatcher`,在install中最后调用了`AndroidRefWatcherBuilder#buildAndInstall`方法，
+我们回到ExampleApplication中，`install`中实际使用`AndroidRefWatcherBuilder`创建了一个`RefWatcher`,在install中最后调用了`AndroidRefWatcherBuilder.buildAndInstall`方法，
 
 ```
 public RefWatcher buildAndInstall() {
@@ -178,7 +180,7 @@ public RefWatcher buildAndInstall() {
     return refWatcher;
   }
 ```
-这里`installOnIcsPlus`使得我们直接可以在4.0的设备上检测`Activity`的内存泄露。因为4.0开始Android引入了`ActivityLifecycleCallbacks`.
+这里`installOnIcsPlus`使得我们直接可以在4.0的设备上检测`Activity`的内存泄露。因为4.0开始Android引入了`ActivityLifecycleCallbacks`。4.0以下的设备依然可以使用，只是需要自己处理。
 
 ```
 private final Application.ActivityLifecycleCallbacks lifecycleCallbacks =
@@ -206,10 +208,10 @@ private final Application.ActivityLifecycleCallbacks lifecycleCallbacks =
         }
       };
 ```
-这就回到了`RefWatcher`的`watch`方法。
+主要就是在`Activity` destory时watch这个activity，这就回到了`RefWatcher`的`watch`方法。
 
 ### 3.2 AndroidWatchExecutor
-我们看一下之前的WatchExecutor的具体实现
+我们看一下之前的WatchExecutor的具体实现：
 
 ```
 @Override public void execute(Retryable retryable) {
@@ -220,7 +222,7 @@ private final Application.ActivityLifecycleCallbacks lifecycleCallbacks =
     }
   }
 ```
-在execute中，等待Looper空闲。
+在execute中，不管是UI线程还是其他线程，最后都是添加到Looper中一个`IdleHandler`。
 
 ```
 void waitForIdle(final Retryable retryable, final int failedAttempts) {
@@ -244,7 +246,7 @@ void waitForIdle(final Retryable retryable, final int failedAttempts) {
     return new AndroidHeapDumper(context, leakDirectoryProvider);
   }
 ```
-构建一个默认的`HeapDumper`。
+在`AndroidRefWatcherBuilder`中的`defaultHeapDumper`方法，构建一个默认的`HeapDumper`。
 
 ```
 @Override public File dumpHeap() {
@@ -274,7 +276,7 @@ void waitForIdle(final Retryable retryable, final int failedAttempts) {
     }
   }
 ```
-在`ensureGone`方法中会调用`heapDump`，如果等待toast的时间过长，会放弃这一次执行，RETRY_LATER，否则会dump hprof数据并取消toast。
+在`ensureGone`方法中会调用`dumpHeap`，如果等待toast的时间过长，会放弃这一次执行，RETRY_LATER，否则会dump hprof数据并取消toast。
 
 #### 3.3.1 LeakDirectoryProvider
 Provides access to where heap dumps and analysis results will be stored.我们可以自己实现这个接口，然后调用LeakCanary.`setDisplayLeakActivityDirectoryProvider(LeakDirectoryProvider)`
@@ -291,7 +293,7 @@ private File externalStorageDirectory() {
     return new File(appFilesDirectory, "leakcanary");
   }
 ```
-会读取以上两个目录的文件，并且以_pending.hprof作为筛选条件。其他细节不多说。
+会读取以上两个目录的文件，并且筛选以_pending.hprof结尾的文件。其他细节不多说。
 
 ### 3.4 ServiceHeapDumpListener
 在`analyze`方法中调用`HeapAnalyzerService.runAnalysis`。
@@ -313,7 +315,7 @@ private File externalStorageDirectory() {
   }
 ```
 
-`HeapAnalyzerService`是一个`IntentService`，会创建一个`HeapAnalyzer`来`checkForLeak`，这里就是用到了`leakcanary-analyzer`module中的东西了，LeakCanary是使用一个叫HAHA的东西来分析，这里就不介绍了，感兴趣的自己了解吧。因为我也没了解过。分析完的结果是一个`AnalysisResult`
+`HeapAnalyzerService`是一个`IntentService`，会创建一个`HeapAnalyzer`来`checkForLeak`，这里就是用到了`leakcanary-analyzer`module中的东西了，LeakCanary是使用一个叫HAHA的东西来分析，这里就不介绍了，感兴趣的自己了解吧。因为我也没了解过。分析完的结果会封装到`AnalysisResult`。
 
 #### 3.4.2 AbstractAnalysisResultService
 依然是个`IntentService`，
@@ -350,4 +352,4 @@ private File externalStorageDirectory() {
 AbstractAnalysisResultService的实现类。在这里处理后就会弹出notification来通知我们点击查看，进入泄露结果的展示页面。
 
 ## 4 结尾
-以上是大致整个的工作机制，很多细节没有多介绍，基本流程都有了
+以上是大致整个的工作机制，很多细节没有多介绍，基本流程都有了。
