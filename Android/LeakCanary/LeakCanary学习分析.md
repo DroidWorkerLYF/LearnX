@@ -155,5 +155,9 @@ Retryable.Result ensureGone(final KeyedWeakReference reference, final long watch
 ### 2.9 ExcludedRefs
 可以添加一些我们已知的泄露，以避免计算最短强引用时被使用，可以排除一些系统已知的内存泄露等。
 
+### 2.10
+![leakcanary-watcher](https://github.com/DroidWorkerLYF/LearnX/blob/master/Android/LeakCanary/leakcanary-watcher.png?raw=true)
+
+目前我们看的都是来自leakcanary-watcher这个module，`Preconditions`就是类似Guava提供了一个`checkNotNull`方法，`RefWatcherBuilder`就是利用builder模式创建一个`RefWatcher`对象。
 
 ## 3.代码分析
