@@ -161,3 +161,76 @@ Retryable.Result ensureGone(final KeyedWeakReference reference, final long watch
 目前我们看的都是来自leakcanary-watcher这个module，`Preconditions`就是类似Guava提供了一个`checkNotNull`方法，`RefWatcherBuilder`就是利用builder模式创建一个`RefWatcher`对象。
 
 ## 3.代码分析
+![leakcanary-android](https://github.com/DroidWorkerLYF/LearnX/blob/master/Android/LeakCanary/leakcanary-android.png?raw=true)
+
+看上面的截图，我们能发现很多眼熟的名字都是针对上面提到的接口的实现。而internal包里则是和展示结果相关的。
+
+### 3.1 初始化
+我们回到ExampleApplication中，install中实际使用`AndroidRefWatcherBuilder`创建了一个`RefWatcher`,在install中最后调用了`AndroidRefWatcherBuilder#buildAndInstall`方法，
+
+```
+public RefWatcher buildAndInstall() {
+    RefWatcher refWatcher = build();
+    if (refWatcher != DISABLED) {
+      LeakCanary.enableDisplayLeakActivity(context);
+      ActivityRefWatcher.installOnIcsPlus((Application) context, refWatcher);
+    }
+    return refWatcher;
+  }
+```
+这里`installOnIcsPlus`使得我们直接可以在4.0的设备上检测`Activity`的内存泄露。因为4.0开始Android引入了`ActivityLifecycleCallbacks`.
+
+```
+private final Application.ActivityLifecycleCallbacks lifecycleCallbacks =
+      new Application.ActivityLifecycleCallbacks() {
+        @Override public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        }
+
+        @Override public void onActivityStarted(Activity activity) {
+        }
+
+        @Override public void onActivityResumed(Activity activity) {
+        }
+
+        @Override public void onActivityPaused(Activity activity) {
+        }
+
+        @Override public void onActivityStopped(Activity activity) {
+        }
+
+        @Override public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        }
+
+        @Override public void onActivityDestroyed(Activity activity) {
+          ActivityRefWatcher.this.onActivityDestroyed(activity);
+        }
+      };
+```
+这就回到了`RefWatcher`的`watch`方法。
+
+### 3.2 AndroidWatchExecutor
+我们看一下之前的WatchExecutor的具体实现
+
+```
+@Override public void execute(Retryable retryable) {
+    if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+      waitForIdle(retryable, 0);
+    } else {
+      postWaitForIdle(retryable, 0);
+    }
+  }
+```
+在execute中，等待Looper空闲。
+
+```
+void waitForIdle(final Retryable retryable, final int failedAttempts) {
+    // This needs to be called from the main thread.
+    Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+      @Override public boolean queueIdle() {
+        postToBackgroundWithDelay(retryable, failedAttempts);
+        return false;
+      }
+    });
+  }
+```
+当Looper空闲时，触发`postToBackgroundWithDelay`，执行之前传入的`Retryable`，也就是我们上文写到的`ensureGone`。
