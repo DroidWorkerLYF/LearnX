@@ -31,12 +31,11 @@ public class ExampleApplication extends Application {
 }
 ```
 
-至此，4.0以上的系统`Activity`的内存泄露就会被检测。
+至此，4.0以上的系统`Activity`的内存泄露就会被检测。接下来的分析都基于`leakcanary` 1.5版本。
 
 ## 2.LeakCanary wathcer
 
-`LeakCanary.install(this)`   
-`LeakCancary`的`install`方法会返回一个`RefWatcher`对象，该对象对外提供了
+`LeakCanary.install(this)`方法会返回一个`RefWatcher`对象，该对象对外提供了
 
 1. `public void watch(Object watchedReference)`
 2. `public void watch(Object watchedReference, String referenceName)`
@@ -56,13 +55,13 @@ public class ExampleApplication extends Application {
     ensureGoneAsync(watchStartNanoTime, reference);
 ```
 
-方法内生成了watch开始的时间,后边会用于计算，唯一对应的key，并且new了一个`KeyedWeakReference`，然后执行了`ensureGoneAsync(final long watchStartNanoTime, 
+方法内生成了watch开始的时间,后边会用于计算，唯一对应的key，并且new了一个`KeyedWeakReference`对象，然后执行了`ensureGoneAsync(final long watchStartNanoTime, 
 final KeyedWeakReference reference)`。
 
 [毫微秒 nano time](http://www.cnblogs.com/whyhappy/p/5404725.html)
 
 ### 2.1 KeyedWeakReference
-继承自`WeakReference<Object>`，存储之前生成的key和referenceName。对应于`HeapDump`中的referenceKey和referenceName。当分析一个heap dump时，会查找所有`KeyedWeakReference`实例，然后找到对应key值的对象，这样就找到了泄露的对象，然后就可以计算最短GC roots。
+继承自`WeakReference<Object>`，存储之前生成的key和referenceName。对应于`HeapDump`中的referenceKey和referenceName。当分析一个heap dump文件时，会查找所有`KeyedWeakReference`实例，然后找到对应key值的对象，这样就找到了泄露的对象，然后就可以计算最短GC roots。
 
 ### 2.2 HeapDump
 [Heap Dump](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.mat.ui.help%2Fconcepts%2Fheapdump.html) is a snapshot of the memory of a Java process at a certain point of time.  
@@ -79,6 +78,14 @@ final KeyedWeakReference reference)`。
   public final long watchDurationMs;
   public final long gcDurationMs;
   public final long heapDumpDurationMs;
+```
+类中还定义了一个interface提供analyze方法。
+
+```
+/** Receives a heap dump to analyze. */
+  public interface Listener {
+    void analyze(HeapDump heapDump);
+  }
 ```
 
 ### 2.3 WatchExecutor
@@ -163,10 +170,10 @@ PS:每次WeakReference所指向的对象被GC后，这个弱引用都会被放�
 
 目前我们看的都是来自leakcanary-watcher这个module，`Preconditions`就是类似Guava提供了一个`checkNotNull`方法，`RefWatcherBuilder`就是利用builder模式创建一个`RefWatcher`对象。
 
-## 3.代码分析
+## 3.LeakCanary android
 ![leakcanary-android](https://github.com/DroidWorkerLYF/LearnX/blob/master/Android/LeakCanary/leakcanary-android.png?raw=true)
 
-看上面的截图，我们能发现很多眼熟的名字都是针对上面提到的接口的实现。而internal包里则是和展示结果相关的。
+看上面的截图，我们能发现很多眼熟的名字都是针对上面提到的接口的实现。而internal包里则是和处理展示结果相关的。
 
 ### 3.1 初始化
 我们回到ExampleApplication中，`install`中实际使用`AndroidRefWatcherBuilder`创建了一个`RefWatcher`,在install中最后调用了`AndroidRefWatcherBuilder.buildAndInstall`方法，
@@ -297,7 +304,7 @@ private File externalStorageDirectory() {
 会读取以上两个目录的文件，并且筛选以_pending.hprof结尾的文件。其他细节不多说。
 
 ### 3.4 ServiceHeapDumpListener
-在`analyze`方法中调用`HeapAnalyzerService.runAnalysis`。
+实现了`HeapDump.Listener`，在`analyze`方法中调用`HeapAnalyzerService.runAnalysis`。
 
 #### 3.4.1 HeapAnalyzerService
 ```
