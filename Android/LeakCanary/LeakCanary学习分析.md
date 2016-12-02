@@ -284,7 +284,7 @@ void waitForIdle(final Retryable retryable, final int failedAttempts) {
     }
   }
 ```
-在`ensureGone`方法中会调用`dumpHeap`，如果等待toast的时间过长，会放弃这一次执行，RETRY_LATER，否则会dump hprof数据并取消toast。
+在`ensureGone`方法中会调用`dumpHeap`，并且show toast，就是发生泄漏时我们看到的那个，然后等到handler空闲时，会触发`FutureResult`的countdown，如果等待的时间超过5秒，会放弃这一次执行，RETRY_LATER，否则会dump hprof数据并关闭toast。
 
 #### 3.3.1 LeakDirectoryProvider
 Provides access to where heap dumps and analysis results will be stored.我们可以自己实现这个接口，然后调用LeakCanary.`setDisplayLeakActivityDirectoryProvider(LeakDirectoryProvider)`
