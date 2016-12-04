@@ -301,7 +301,7 @@ private File externalStorageDirectory() {
     return new File(appFilesDirectory, "leakcanary");
   }
 ```
-会读取以上两个目录的文件，并且筛选以_pending.hprof结尾的文件。其他细节不多说。
+会读取以上两个目录的文件，并且筛选以_pending.hprof结尾的文件。这里还会处理是否有`WRITE_EXTERNAL_STORAGE`权限，如果在external storage不可写，会切换到app storage。
 
 ### 3.4 ServiceHeapDumpListener
 实现了`HeapDump.Listener`，在`analyze`方法中调用`HeapAnalyzerService.runAnalysis`。
@@ -360,7 +360,7 @@ private File externalStorageDirectory() {
 AbstractAnalysisResultService的实现类。在这里处理后就会弹出notification来通知我们点击查看，进入泄露结果的展示页面。
 
 ## 4 结尾
-以上是大致整个的工作机制，很多细节没有多介绍，基本流程都有了。
+以上是大致整个的流程。
 
 # 常见内存泄露
 * 集合类
@@ -393,7 +393,7 @@ AbstractAnalysisResultService的实现类。在这里处理后就会弹出notifi
 	```
 * 匿名内部类/非静态内部类,异步线程
 * Handler 造成的内存泄漏
-* Sensor Manager
+* 注册了却没有unregister
 
 
 ### 参考的文章
