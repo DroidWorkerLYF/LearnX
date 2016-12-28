@@ -394,6 +394,7 @@ AbstractAnalysisResultService的实现类。在这里处理后就会弹出notifi
 * 匿名内部类/非静态内部类,异步线程
 * Handler 造成的内存泄漏
 * 注册了却没有unregister
+* 无限循环的动画
 
 
 ### 参考的文章
