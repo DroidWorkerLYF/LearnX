@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 ```
 这是一段明显会内存泄露的代码。接下来我们通过Analyzer Task分析泄露。
 首先触发GC，然后Dump Java Heap。
-![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/memory%20monitor.png?raw=true)
+![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Memory_Monitor.png?raw=true)
 
 Android studio会自动打开生成的文件。
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Analyzer_Task_result.png?raw=true)
@@ -45,7 +45,7 @@ Android studio生成的不是标准hprof文件，我们需要先转换为标准�
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Histogram.png?raw=true)
 
 可以在第一行中输入要查询的内容，支持正则表达式。上面我们已经知道了泄露了`MainActivity`。接下来借助MAT我们找到引用。输入`MainActivity `，在结果项右击，选择如下的选项。
-![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/GC.png?raw=true)
+![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/GC_Root.png?raw=true)
 
 结果
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/GC_root_result.png?raw=true)
