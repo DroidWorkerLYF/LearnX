@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Memory_Monitor.png?raw=true)
 
 Android studio会自动打开生成的文件。
-![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Analyzer_Task_result.png?raw=true)
+![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Result_Analyzer_Task.png?raw=true)
 
 右侧我们打开Analyzer Task面板，可以看到检测泄露Activity的选项，然后run，就可以得到结果了。选中泄露的Activity可以再Reference Tree中看到更详细的内容。
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Reference_Tree.png?raw=true)
@@ -48,7 +48,7 @@ Android studio生成的不是标准hprof文件，我们需要先转换为标准�
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/GC_Root.png?raw=true)
 
 结果
-![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/GC_root_result.png?raw=true)
+![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Memory/Result_GC_Root.png?raw=true)
 
 找到了导致泄露的引用，变量`mLeakActivity `。
 
