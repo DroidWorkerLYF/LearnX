@@ -28,6 +28,7 @@
 
 
 #### 阐述下 SOLID 原则
+[wiki](https://zh.wikipedia.org/wiki/SOLID_(%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1))
 1. 单一功能原则(Single responsibility principle)
 2. 开闭原则(Open - close principle)
 3. 里氏替换原则(Liskov Substitution principle)
@@ -37,8 +38,28 @@
 #### 其他的譬如 KISS,DRY,YAGNI 等原则又是什么含义
 
 #### 什么是设计模式（Design Patterns）？你知道哪些设计模式？
+[设计模式](https://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_(%E8%AE%A1%E7%AE%97%E6%9C%BA))是对软件设计中普遍存在（反复出现）的各种问题，所提出的解决方案。是描述在各种不同情况下，要怎么解决问题的一种方案。  
+
+1. 抽象工厂(Abstract factory pattern)
+2. 工厂方法(Factory method pattern)
+3. 生成器(Builder Pattern)
+4. 原型模式
+5. 单例模式
+6. 适配器模式
+7. 组合模式
+8. 修饰模式
+9. 外观模式
+10. 责任链
+11. 迭代器
+12. 终结者
+13. 备忘录
+14. 观察者
+15. 策略模式
+16. 模板方法
+17. 访问者
 
 #### 你有了解过存在哪些反模式（Anti-Patterns）吗？
+一个[反面模式](https://zh.wikipedia.org/wiki/%E5%8F%8D%E9%9D%A2%E6%A8%A1%E5%BC%8F)(anti-pattern或antipattern)指的是在实践中明显出现但又低效或是有待优化的设计模式，是用来解决问题的带有共同性的不良方法。它们已经经过研究并分类，以防止日后重蹈覆辙，并能在研发尚未投产的系统时辨认出来。
 
 #### 你会如何设计登陆舰/数学表达式计算程序/一条龙？
 
