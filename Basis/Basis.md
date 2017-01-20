@@ -28,7 +28,8 @@
 
 
 #### 阐述下 SOLID 原则
-[wiki](https://zh.wikipedia.org/wiki/SOLID_(%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1))
+[wiki](https://zh.wikipedia.org/wiki/SOLID_(%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1))  
+
 1. 单一功能原则(Single responsibility principle)
 2. 开闭原则(Open - close principle)
 3. 里氏替换原则(Liskov Substitution principle)
@@ -64,6 +65,13 @@
 #### 你会如何设计登陆舰/数学表达式计算程序/一条龙？
 
 #### 你知道哪些基本的排序算法，它们的计算复杂度如何？在给定数据的情况下你会倾向于使用哪种算法呢？
+[wiki](https://zh.wikipedia.org/wiki/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95)  
+冒泡排序  
+插入排序  
+归并排序  
+堆排序  
+快速排序
+
 
 #### 尝试编写如下代码
 1. 计算指定数字的阶乘
@@ -74,6 +82,8 @@
 
 ## Java 核心概念
 #### equals 与 hashCode 的异同点在哪里？Java 的集合中又是如何使用它们的
+定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
+重写equals必须重写hashcode，
 
 #### 描述下 Java 中集合（Collections），接口（Interfaces），实现（Implementations）的概念。LinkedList 与 ArrayList 的区别是什么
 
@@ -98,8 +108,6 @@
 #### 如何构建不可变的类结构？关键点在哪里？
 
 #### 什么是 JIT 编译？
-
-#### Java 8 / Java 7 为我们提供了什么新功能？即将到来的 Java 9 又带来了怎样的新功能？
 
 
 
