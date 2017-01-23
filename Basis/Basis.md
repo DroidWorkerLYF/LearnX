@@ -1,4 +1,56 @@
 ## Java 核心概念
+#### 基础数据类型
+8个：byte，short，int，long，float，double，char，boolean  
+byte：8位，1字节，有符号，-128 ~ 127  
+short：16位，有符号，-32768 ~ 32767  
+int：32位，4字节，有符号  
+long：64位，有符号  
+float：32位，单精度，不能用来表示精确的值，如货币  
+double：64位，双精度，不能表示精确的值，如货币  
+char：16位Unicode字符
+
+自动类型转换：  
+byte，short，char—> int —> long—> float —> double
+
+#### 基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
+1. 技术数据类型是基本类型，但是封装类型是类
+
+#### 拆箱/装箱问题
+输出结果是什么？
+```
+public class Main {
+	public static void main(String[] args) {
+		Integer i1 = 100;
+		Integer i2 = 100;
+		Integer i3 = 100;
+		Integer i4 = 100;
+		
+		System.out.println(i1==i2);
+		System.out.println(i3==i4);
+	}
+}
+```
+
+true  
+false
+
+```
+public static Integer valueOf(int i) {
+	if(i >= IntegerCache.low && i <= IntegerCache.high)
+		return IntegerCache.cache[i + (-IntegerCache.low)];
+	else
+       return new Integer(i);
+}
+```
+
+#### == and equals
+
+|               | ==              | equals        |
+|:------------- |:---------------:|:-------------:|
+| 基本数据类型    | 值              | 不可用         |
+| 包装类         | 内存地址         | 内容           |
+| 字符串         | 内存首地址        | 字符串内容      |
+| 非字符串       | 内存首地址        | 内存首地址      |
 
 #### equals 与 hashCode 的异同点在哪里？Java 的集合中又是如何使用它们的
 定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
@@ -46,8 +98,6 @@
 #### LinkedList 与 ArrayList 的区别是什么?
 1. LinkedList是基于链表，ArrayList基于数组
 2. get/set，ArrayList更优，add/remove，LinedList更优
-
-#### 基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
 
 #### final 与 static 关键字可以用于哪里？它们的作用是什么？
 
