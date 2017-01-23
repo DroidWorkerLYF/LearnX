@@ -1,7 +1,71 @@
+## Java 核心概念
+
+#### equals 与 hashCode 的异同点在哪里？Java 的集合中又是如何使用它们的
+定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
+重写equals必须重写hashcode，
+
+#### 接口 Interface 及意义
+1. 接口是抽象类型，无法实例化
+2. 用来指定`class`必须实现的方法，使不同类的对象可以利用相同的interface进行沟通
+3. 用来模拟多继承
+4. 接口无法实现另一个接口
+
+规范，扩展，回调
+
+#### 抽象类(Abstract class) 及意义
+1. 由abstract关键字定义，不一定包含abstract方法
+2. 无法实例化，但可以是其他类的子类
+3. 定义抽象概念，对共通的方法和属性进行规约
+
+苹果和橘子都是水果，但是水果是个概念，不会有实例。
+
+#### 比较抽象类和接口，何时使用哪一个？
+1. 抽象类可以对共通的方法和属性提供一个实现，而接口不能
+2. 接口的属性是public static final的，而抽象类没有限制
+3. 接口的所有方法都是public的，而抽象类则没有限制
+4. 一个类只能实现一个class，但是可以实现任意多接口
+
+使用抽象类：
+
+1. 在密切相关的类间共享代码
+2. 子类继承抽象类有许多公共属性和方法或者需要非public修饰符
+3. 需要声明非static，非final的属性
+
+使用接口：
+
+1. 不相关的类实现接口
+2. 指定特定数据类型的行为，但是不关心实现
+3. 利用多继承
+
+#### 描述下 Java 中集合（Collections），接口（Interfaces），实现（Implementations）的概念。LinkedList 与 ArrayList 的区别是什么
+
+#### 基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
+
+#### final 与 static 关键字可以用于哪里？它们的作用是什么？
+
+#### 阐述下 Java 中的访问描述符（Access Modifiers）
+
+#### 描述下 String,StringBuilder 以及 StringBuffer 区别
+
+#### 接口（Interface）与抽象类（Abstract Class）的区别在哪里
+
+#### 覆盖（Overriding）与重载（OverLoading）的区别在哪里
+
+#### 异常分为哪几种类型？以及所谓的handle or declare原则应该如何理解？
+
+#### 简述垃圾回收器的工作原理
+
+#### 你是如何处理内存泄露或者栈溢出问题的？
+
+#### 如何构建不可变的类结构？关键点在哪里？
+
+#### 什么是 JIT 编译？
+
+
 ## 面向对象编程的基本理念与核心设计思想
 #### 解释多态性（polymorphism），封装性（encapsulation），内聚（cohesion）以及耦合（coupling）
 继承：[计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%9E%8B_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6))  
-动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。
+动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。  
 静态多态：函数重载，运算符重载，参数化多态(编译期)  
 
 封装性：[将抽象性函数接口的实现细节部分包装、隐藏起来的方法,防止外界调用端，去访问对象内部实现细节的手段](https://zh.wikipedia.org/wiki/%E5%B0%81%E8%A3%9D_(%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88))  
@@ -80,36 +144,7 @@
 4. 回文字符串检测
 5. 枚举给定字符串的所有排列组合
 
-## Java 核心概念
-#### equals 与 hashCode 的异同点在哪里？Java 的集合中又是如何使用它们的
-定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
-重写equals必须重写hashcode，
-
-#### 描述下 Java 中集合（Collections），接口（Interfaces），实现（Implementations）的概念。LinkedList 与 ArrayList 的区别是什么
-
-#### 基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
-
-#### final 与 static 关键字可以用于哪里？它们的作用是什么？
-
-#### 阐述下 Java 中的访问描述符（Access Modifiers）
-
-#### 描述下 String,StringBuilder 以及 StringBuffer 区别
-
-#### 接口（Interface）与抽象类（Abstract Class）的区别在哪里
-
-#### 覆盖（Overriding）与重载（OverLoading）的区别在哪里
-
-#### 异常分为哪几种类型？以及所谓的handle or declare原则应该如何理解？
-
-#### 简述垃圾回收器的工作原理
-
-#### 你是如何处理内存泄露或者栈溢出问题的？
-
-#### 如何构建不可变的类结构？关键点在哪里？
-
-#### 什么是 JIT 编译？
-
-
 
 ### 原文
-[https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/](https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/)
+[https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/](https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/)  
+[https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md](https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md)
