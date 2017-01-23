@@ -4,7 +4,7 @@
 定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
 重写equals必须重写hashcode，
 
-#### 接口 Interface 及意义
+#### 接口（Interface）及意义
 1. 接口是抽象类型，无法实例化
 2. 用来指定`class`必须实现的方法，使不同类的对象可以利用相同的interface进行沟通
 3. 用来模拟多继承
@@ -37,7 +37,15 @@
 2. 指定特定数据类型的行为，但是不关心实现
 3. 利用多继承
 
-#### 描述下 Java 中集合（Collections），接口（Interfaces），实现（Implementations）的概念。LinkedList 与 ArrayList 的区别是什么
+#### Java 中集合（Collections）
+1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
+2. 用于存储，检索，操作和传达聚合数据
+
+[集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。
+
+#### LinkedList 与 ArrayList 的区别是什么?
+1. LinkedList是基于链表，ArrayList基于数组
+2. get/set，ArrayList更优，add/remove，LinedList更优
 
 #### 基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
 
