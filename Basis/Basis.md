@@ -15,8 +15,9 @@ byte，short，char—> int —> long—> float —> double
 #### 基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
 1. 技术数据类型是基本类型，但是封装类型是类
 
-#### 拆箱/装箱问题
+##### 拆箱/装箱问题
 输出结果是什么？
+
 ```
 public class Main {
 	public static void main(String[] args) {
@@ -65,7 +66,7 @@ public static Integer valueOf(int i) {
 规范，扩展，回调
 
 #### 抽象类(Abstract class) 及意义
-1. 由abstract关键字定义，不一定包含abstract方法
+1. 由`abstract`关键字定义，不一定包含`abstract`方法
 2. 无法实例化，但可以是其他类的子类
 3. 定义抽象概念，对共通的方法和属性进行规约
 
@@ -73,21 +74,52 @@ public static Integer valueOf(int i) {
 
 #### 比较抽象类和接口，何时使用哪一个？
 1. 抽象类可以对共通的方法和属性提供一个实现，而接口不能
-2. 接口的属性是public static final的，而抽象类没有限制
-3. 接口的所有方法都是public的，而抽象类则没有限制
-4. 一个类只能实现一个class，但是可以实现任意多接口
+2. 接口的属性是`public static final`的，而抽象类没有限制
+3. 接口的所有方法都是`public`的，而抽象类则没有限制
+4. 一个类只能实现一个`class`，但是可以实现任意多接口
 
 使用抽象类：
 
 1. 在密切相关的类间共享代码
-2. 子类继承抽象类有许多公共属性和方法或者需要非public修饰符
-3. 需要声明非static，非final的属性
+2. 子类继承抽象类有许多公共属性和方法或者需要非`public`修饰符
+3. 需要声明非`static`，非`final`的属性
 
 使用接口：
 
 1. 不相关的类实现接口
 2. 指定特定数据类型的行为，但是不关心实现
 3. 利用多继承
+
+#### 嵌套类
+[Doc](https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html)
+
+```
+class OuterClass {
+    ...
+    //静态嵌套类
+    static class StaticNestedClass {
+        ...
+    }
+    //内部类
+    class InnerClass {
+        ...
+    }
+}
+```
+
+嵌套类氛围静态嵌套类(Nested classes that are declared static are called static nested classes)和内部类(Non-static nested classes are called inner classes)。嵌套类是外部类的成员。内部类可以访问外部类的成员，即使是private修饰的，静态嵌套类则不能。嵌套类作为类的成员，可以被`public`，`protectd`，`private`，`package private`修饰，而外部类则只能是`public`或者`package private`。
+
+##### 何时使用嵌套类
+1. 是一种组合只在一个地方使用的`class`的逻辑方式
+2. 增加了封装性
+3. 增加代码的可读性和可维护性
+
+内部类因为与外部类实例相关联，所以不能定义`static`成员。
+
+1. 内部类可以用多个实例，每个实例都有自己的状态信息，并且与其他外围对象的信息相互独立
+2. 在单个外部类中，可以让多个内部类以不同的方式实现同一个接口，或者继承同一个类
+3. 创建内部类对象的时刻并不依赖于外部类对象的创建
+4. 内部类并没有“is-a”关系，他就是一个独立的实体
 
 #### Java 中集合（Collections）
 1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
