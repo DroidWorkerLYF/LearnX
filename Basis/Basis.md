@@ -121,19 +121,36 @@ class OuterClass {
 3. 创建内部类对象的时刻并不依赖于外部类对象的创建
 4. 内部类并没有“is-a”关系，他就是一个独立的实体
 
+#### 父类的静态方法能否被子类重写
+不能
+
+1. 静态方法是编译时就决定的。
+2. Override依赖于类的实例
+
 #### Java 中集合（Collections）
 1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
 2. 用于存储，检索，操作和传达聚合数据
 
 [集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。
 
-#### LinkedList 与 ArrayList 的区别是什么?
+#### LinkedList 与 ArrayList 的区别?
 1. LinkedList是基于链表，ArrayList基于数组
 2. get/set，ArrayList更优，add/remove，LinedList更优
 
-#### final 与 static 关键字可以用于哪里？它们的作用是什么？
+#### HashMap 和 HashTable 的区别？
+
+#### HashMap 和 ArrayMap 的区别？
 
 #### 阐述下 Java 中的访问描述符（Access Modifiers）
+top-level：`public`，`package-private`  
+member-level：`public`，`protected`，`private`，`package-private`
+
+#### final 与 static 关键字可以用于哪里？它们的作用是什么？
+final：可以修饰class，method，variable。
+
+1. final class无法被继承，可以提供安全性和效率
+2. final method无法被子类重写或隐藏，可以避免，子类带来不期望的行为。
+3. final variable只能被初始化一次，
 
 #### 描述下 String,StringBuilder 以及 StringBuffer 区别
 
