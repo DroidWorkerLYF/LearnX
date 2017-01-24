@@ -165,7 +165,20 @@ member-level：`public`，`protected`，`private`，`package-private`
 static：修饰变量，方法，static代码块  
 不依赖于实例。
 
-#### 描述下 String,StringBuilder 以及 StringBuffer 区别
+#### 描述下 String，StringBuilder 以及 StringBuffer 区别
+* String 字符串常量  
+* StringBuilder 字符串变量(非线程安全)
+* StringBuffer 字符串变量(线程安全)
+
+String是不可变的，所以每次改变都是创建新的对象，如果经常改变字符串内容会导致产生大量无用对象，触发GC。 StringBuilder比StringBuffer效率更高。单线程时，优先使用StringBuilder。
+
+```
+	1.String S1 = "This is only a" + " simple" + " test"
+	2.StringBuffer Sb = new StringBuilder(“This is only a”)
+						 .append(“ simple”).append(“ test”)
+```  
+对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。
+
 
 #### 接口（Interface）与抽象类（Abstract Class）的区别在哪里
 
