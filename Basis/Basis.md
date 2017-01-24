@@ -179,10 +179,20 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 ```  
 对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。
 
-
-#### 接口（Interface）与抽象类（Abstract Class）的区别在哪里
-
 #### 覆盖（Overriding）与重载（OverLoading）的区别在哪里
+都是Java多台性的表现
+
+`Override`
+
+1. 子类对父类方法的实现进行重新编写，返回值，参数都不变，修改实现。
+2. 不能抛出新的检查异常或者比被重写方法申明更加宽泛的异常
+3. 访问权限不能比父类中被重写的方法的访问权限更低
+4. 子类和父类在同一个包中，那么子类可以重写父类所有方法，除了声明为private和final的方法
+5. 子类和父类不在同一个包中，那么子类只能够重写父类的声明为public和protected的非final方法
+
+`Overload`
+
+同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同
 
 #### 异常分为哪几种类型？以及所谓的handle or declare原则应该如何理解？
 
