@@ -146,11 +146,24 @@ top-level：`public`，`package-private`
 member-level：`public`，`protected`，`private`，`package-private`
 
 #### final 与 static 关键字可以用于哪里？它们的作用是什么？
-final：可以修饰class，method，variable。
+[final：](https://en.wikipedia.org/wiki/Final_(Java))可以修饰class，method，variable。final不能修饰构造函数，父类的private成员方法不能被子类覆盖，所以是final的。
 
 1. final class无法被继承，可以提供安全性和效率
-2. final method无法被子类重写或隐藏，可以避免，子类带来不期望的行为。
-3. final variable只能被初始化一次，
+2. final method无法被子类重写或隐藏，可以避免，子类带来不期望的行为
+3. final variable只能被初始化一次，不一定要在声明时初始化。如果声明的是一个引用(`reference`)，意味着无法再引用其他对象，但是被引用的对象如果是mutable，那么依然是mutable
+4. final 参数
+
+##### final variable
+没有在声明时初始化的final variable 称为 "blank final" variable
+
+1. 在每个构造函数中初始化
+2. 如果还有static修饰，则在static initializer中初始化
+
+##### anonymous inner class
+匿名内部类中访问outer class的变量要求是final的。
+
+static：修饰变量，方法，static代码块  
+不依赖于实例。
 
 #### 描述下 String,StringBuilder 以及 StringBuffer 区别
 
