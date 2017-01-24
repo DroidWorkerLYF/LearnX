@@ -173,13 +173,13 @@ static：修饰变量，方法，static代码块
 String是不可变的，所以每次改变都是创建新的对象，如果经常改变字符串内容会导致产生大量无用对象，触发GC。 StringBuilder比StringBuffer效率更高。单线程时，优先使用StringBuilder。
 
 ```
-	1.String S1 = "This is only a" + " simple" + " test"
+	1.String S1 = "This is only a" + " simple" + " test";
 	2.StringBuffer Sb = new StringBuilder(“This is only a”)
 						 .append(“ simple”).append(“ test”)
 ```  
 对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。
 
-#### 覆盖（Overriding）与重载（OverLoading）的区别在哪里
+#### 覆盖（Overriding）与重载（Overloading）的区别在哪里
 都是Java多台性的表现
 
 `Override`
@@ -194,7 +194,10 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 
 同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同
 
+#### 进程和线程的区别
+
 #### 异常分为哪几种类型？以及所谓的handle or declare原则应该如何理解？
+异常是程序执行期间打乱了正常指令流的事件。
 
 #### 简述垃圾回收器的工作原理
 
@@ -203,6 +206,8 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 #### 如何构建不可变的类结构？关键点在哪里？
 
 #### 什么是 JIT 编译？
+
+#### Java虚拟机的特性
 
 
 ## 面向对象编程的基本理念与核心设计思想
@@ -271,6 +276,14 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 
 #### 你会如何设计登陆舰/数学表达式计算程序/一条龙？
 
+#### 尝试编写如下代码
+1. 计算指定数字的阶乘
+2. 开发 Fizz Buzz 小游戏
+3. 倒转句子中的单词
+4. 回文字符串检测
+5. 枚举给定字符串的所有排列组合
+
+## 算法
 #### 你知道哪些基本的排序算法，它们的计算复杂度如何？在给定数据的情况下你会倾向于使用哪种算法呢？
 [wiki](https://zh.wikipedia.org/wiki/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95)  
 冒泡排序  
@@ -278,14 +291,6 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 归并排序  
 堆排序  
 快速排序
-
-
-#### 尝试编写如下代码
-1. 计算指定数字的阶乘
-2. 开发 Fizz Buzz 小游戏
-3. 倒转句子中的单词
-4. 回文字符串检测
-5. 枚举给定字符串的所有排列组合
 
 
 ### 原文
