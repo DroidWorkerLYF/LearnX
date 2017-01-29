@@ -305,4 +305,5 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 
 ### 原文
 [https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/](https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/)  
-[https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md](https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md)
+[https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md](https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md)  
+[https://ydmmocoo.github.io/2016/06/22/Android面试题整理/](https://ydmmocoo.github.io/2016/06/22/Android面试题整理/)
