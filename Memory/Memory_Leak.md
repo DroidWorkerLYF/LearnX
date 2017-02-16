@@ -178,6 +178,10 @@ FindBugs
 ### 参考的文章
 [极客学院 Java 内存管理](http://wiki.jikexueyuan.com/project/java-special-topic/platorm-memory.html)  
 [Java内存布局及Java各种存储区域(详解)](http://blog.csdn.net/waitforfree/article/details/38781927)  
-[Android应用内存泄漏的定位、分析与解决策略]([http://www.jianshu.com/p/96c55ea3446e?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io](http://www.jianshu.com/p/96c55ea3446e?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io))
+[Android应用内存泄漏的定位、分析与解决策略]([http://www.jianshu.com/p/96c55ea3446e?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io](http://www.jianshu.com/p/96c55ea3446e?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io))  
 [JVM 垃圾回收器工作原理及使用实例介绍](http://www.ibm.com/developerworks/cn/java/j-lo-JVMGarbageCollection/index.html)  
-[Java之美[从菜鸟到高手演变]之JVM内存管理及垃圾回收](http://blog.csdn.net/zhangerqing/article/details/8214365)
+[Java之美[从菜鸟到高手演变]之JVM内存管理及垃圾回收](http://blog.csdn.net/zhangerqing/article/details/8214365)  
+[Android性能优化-基本概念](http://www.jianshu.com/p/c0e5c13d5ecb)  
+[Android性能优化-Memory Monitor检测内存泄露](http://www.jianshu.com/p/ef9081050f5c)  
+[Android性能优化-MAT比Menmery Monitor更强大](http://www.jianshu.com/p/2d47d1cf5ccf)  
+[Android性能优化-StrickMode严苛模式检测耗时与内存问题](http://www.jianshu.com/p/2ebc9363ea16)  
