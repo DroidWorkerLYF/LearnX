@@ -174,6 +174,7 @@ FindBugs
 4. Handler
 5. 未解绑
 6. 无限循环动画
+7. 资源对象未关闭(Cursor, Stream, Socket)
 
 ### 参考的文章
 [极客学院 Java 内存管理](http://wiki.jikexueyuan.com/project/java-special-topic/platorm-memory.html)  
