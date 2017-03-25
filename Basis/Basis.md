@@ -1,5 +1,5 @@
-## Java 核心概念
-#### 基础数据类型
+#Java 核心概念
+##基础数据类型
 8个：byte，short，int，long，float，double，char，boolean  
 byte：8位，1字节，有符号，-128 ~ 127  
 short：16位，有符号，-32768 ~ 32767  
@@ -12,10 +12,10 @@ char：16位Unicode字符
 自动类型转换：  
 byte，short，char—> int —> long—> float —> double
 
-#### 基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
-1. 技术数据类型是基本类型，但是封装类型是类
+###基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
+技术数据类型是基本类型，但是封装类型是类
 
-##### 拆箱/装箱问题
+####拆箱/装箱问题
 输出结果是什么？
 
 ```
@@ -23,8 +23,8 @@ public class Main {
 	public static void main(String[] args) {
 		Integer i1 = 100;
 		Integer i2 = 100;
-		Integer i3 = 100;
-		Integer i4 = 100;
+		Integer i3 = newInteger(100);
+		Integer i4 = newInteger(100);
 		
 		System.out.println(i1==i2);
 		System.out.println(i3==i4);
@@ -37,12 +37,36 @@ false
 
 ```
 public static Integer valueOf(int i) {
-	if(i >= IntegerCache.low && i <= IntegerCache.high)
-		return IntegerCache.cache[i + (-IntegerCache.low)];
-	else
-       return new Integer(i);
-}
+        return  i >= 128 || i < -128 ? new Integer(i) : SMALL_VALUES[i + 128];
+    }
 ```
+
+####其他
+`3*0.1 == 0.3`返回值  
+false，因为浮点数不能完全精确的表示出来
+
+`a=a+b`与`a+=b`有什么区别吗?  
++=操作符会进行隐式自动类型转换
+
+##==,equals and hashcode
+##String,StringBuilder,StringBuffer
+##抽象类
+##接口
+##嵌套类
+##集合
+##泛型
+##访问描述符
+##覆盖，重载
+##进程，线程
+##异常
+
+#JVM
+##四种引用类型
+##垃圾回收
+##类加载
+
+
+## Java 核心概念
 
 #### == and equals
 
