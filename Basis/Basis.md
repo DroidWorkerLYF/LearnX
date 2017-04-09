@@ -48,7 +48,7 @@ false，因为浮点数不能完全精确的表示出来
 `a=a+b`与`a+=b`有什么区别吗?  
 +=操作符会进行隐式自动类型转换
 
-##==,equals and hashcode
+##== equals and hashcode
 |               | ==              | equals        |
 |:------------- |:---------------:|:-------------:|
 | 基本数据类型    | 值              | 不可用         |
@@ -61,7 +61,47 @@ false，因为浮点数不能完全精确的表示出来
 * ==操作比较的是两个变量的值是否相等，对于引用型变量表示的是两个变量在堆中存储的地址是否相同，即栈中的内容是否相同。
 * equals将此字符串与指定的对象比较。当且仅当该参数不为 null，并且是与此对象表示相同字符序列的 String 对象时，结果才为 true。即堆中的内容是否相同。==比较的是2个对象的地址（栈中），而equals比较的是2个对象的内容（堆中）。所以当equals为true时，==不一定为true。
 
-##String,StringBuilder,StringBuffer
+### String的equals方法
+```
+public boolean equals(Object anObject) {
+        if (this == anObject) {
+            return true;
+        }
+        if (anObject instanceof String) {
+            String anotherString = (String) anObject;
+            int n = count;
+            if (n == anotherString.count) {
+                int i = 0;
+                while (n-- != 0) {
+                    if (charAt(i) != anotherString.charAt(i))
+                            return false;
+                    i++;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+```
+
+### equals 与 hashCode 的异同点在哪里？Java 的集合中又是如何使用它们的
+定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
+重写equals必须重写hashcode
+
+##String，StringBuilder，StringBuffer
+* String 字符串常量  
+* StringBuilder 字符串变量(非线程安全)
+* StringBuffer 字符串变量(线程安全)
+
+String是不可变的，所以每次改变都是创建新的对象，如果经常改变字符串内容会导致产生大量无用对象，触发GC。 StringBuilder比StringBuffer效率更高。单线程时，优先使用StringBuilder。
+
+```
+	1.String S1 = "This is only a" + " simple" + " test";
+	2.StringBuffer Sb = new StringBuilder(“This is only a”)
+						 .append(“ simple”).append(“ test”)
+```  
+对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。
+
 ##抽象类
 ##接口
 ##嵌套类
@@ -79,19 +119,6 @@ false，因为浮点数不能完全精确的表示出来
 
 
 ## Java 核心概念
-
-#### == and equals
-
-|               | ==              | equals        |
-|:------------- |:---------------:|:-------------:|
-| 基本数据类型    | 值              | 不可用         |
-| 包装类         | 内存地址         | 内容           |
-| 字符串         | 内存首地址        | 字符串内容      |
-| 非字符串       | 内存首地址        | 内存首地址      |
-
-#### equals 与 hashCode 的异同点在哪里？Java 的集合中又是如何使用它们的
-定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
-重写equals必须重写hashcode，
 
 #### 接口（Interface）及意义
 1. 接口是抽象类型，无法实例化
