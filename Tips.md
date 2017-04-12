@@ -52,6 +52,22 @@ class Account {
 }
 ```
 
+## Command Query Separation
+[链接](https://hackernoon.com/oo-tricks-the-art-of-command-query-separation-9343e50a3de0)
+> Functions that change state should not return values and functions that return values should not change state.
+
+```
+User u = UserService.login(username, password);
+```
+改变了系统状态，同时有返回值，带来了side effect。
+```
+User u = UserService.getUser();
+```
+大部分情况下CQS都是work的，但是对像`Stack.pop`也是例外的。  
+Commands return void and queries return values.  
+Use exceptions rather than returning and checking for error states.
+
+
 ## Ripple效果
 [链接](http://michaelevans.org/blog/2015/05/07/android-ripples-with-rounded-corners/)  
 给View设置ripple效果时，需要让波纹是view background的形状，可以在ripple的xml中添加一个item和view background是同样的形状，并指定id为@android:id/mask。
