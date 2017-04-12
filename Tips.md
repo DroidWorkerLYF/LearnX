@@ -1,8 +1,56 @@
 #Tips
-## Law of Demeter
+## 最少知识原则
 [Law of Demeter](https://hackernoon.com/object-oriented-tricks-2-law-of-demeter-4ecc9becad85)  
-得墨忒耳定律，亦称为最少知识原则
+得墨忒耳定律，亦称为最少知识原则  
 
+```
+obj.getX().getY().getZ().doSomething()
+	
+obj.doSomething()
+```
+每个模块应该对其他模块只有有限的了解，只了解和他相关的模块。don't talk to strangers。  
+
+Tell don't ask.我们应该调用这些对象的方法的方法：
+
+* 作为参数传递的对象
+* 方法内生成的对象
+* 对象的变量
+* 全局的对象
+
+*Example*
+
+```
+class User {
+	Account accout;
+	
+	double discountedPlanPrice(String discountCode) {
+		Coupon coupon = Coupon.create(discountCode);
+		return counpon.discount(account.getPlan().getPrice());
+	}
+}
+	
+class Account {
+	Plan plan;
+}
+```
+```
+class User {
+	Account accout;
+	
+	double discountedPlanPrice(String discountCode) {
+		return account.discountedPlanPrice(discountCode);
+	}
+}
+	
+class Account {
+	Plan plan;
+	
+	double discountedPlanPrice(String discountedCode) {
+		Coupon coupon = Coupon.create(discountCode);
+		return coupon.discount(plan.getPrice());
+	}
+}
+```
 
 ## Ripple效果
 [链接](http://michaelevans.org/blog/2015/05/07/android-ripples-with-rounded-corners/)  
