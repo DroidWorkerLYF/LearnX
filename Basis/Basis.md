@@ -13,7 +13,7 @@ char：16位Unicode字符
 byte，short，char—> int —> long—> float —> double
 
 ###基础类型（Primitives）与封装类型（Wrappers）的区别在哪里？
-技术数据类型是基本类型，但是封装类型是类
+基础数据类型是基本类型，但是封装类型是类
 
 ####拆箱/装箱问题
 输出结果是什么？
@@ -59,7 +59,7 @@ false，因为浮点数不能完全精确的表示出来
 * == 是一个运算符。 equals则是对象的方法
 * java中 值类型 是存储在内存中的栈中。 而引用类型在栈中仅仅是存储引用类型变量的地址，而其本身则存储在堆中。所以字符串的内容相同，引用地址不一定相同，有可能创建了多个对象。
 * ==操作比较的是两个变量的值是否相等，对于引用型变量表示的是两个变量在堆中存储的地址是否相同，即栈中的内容是否相同。
-* equals将此字符串与指定的对象比较。当且仅当该参数不为 null，并且是与此对象表示相同字符序列的 String 对象时，结果才为 true。即堆中的内容是否相同。==比较的是2个对象的地址（栈中），而equals比较的是2个对象的内容（堆中）。所以当equals为true时，==不一定为true。
+* ==比较的是2个对象的地址（栈中），而equals比较的是2个对象的内容（堆中）。所以当equals为true时，==不一定为true。
 
 ### String的equals方法
 ```
@@ -84,9 +84,37 @@ public boolean equals(Object anObject) {
     }
 ```
 
-### equals 与 hashCode 的异同点在哪里？Java 的集合中又是如何使用它们的
-定义在Object中，默认的，Object类的hashCode()方法返回这个对象存储的内存地址的编号。
-重写equals必须重写hashcode
+### equals 与 hashCode。Java 的集合中又是如何使用它们的
+* 都定义在Object中，如果两个对象`equal()`方法比较相等，那么两者的`hashCode()`方法必须产生相同的哈希值。反之不然。  
+* 重写equals必须重写hashcode。
+* hashcode常用于`Hashtable`,`HashMap`,`LinkedHashMap`等基于Hash的集合类，将对象放入到集合中时，首先判断集合中是否存在相同的hashcode，不存在则放入集合，如果hashcode相同，则通过`equal()`方法判断是否和集合中有相等的对象，如果没有相等的，则放入集合，不然不放入
+
+```
+HashMap.java
+
+	public V put(K key, V value) {
+        if (table == EMPTY_TABLE) {
+            inflateTable(threshold);
+        }
+        if (key == null)
+            return putForNullKey(value);
+        int hash = sun.misc.Hashing.singleWordWangJenkinsHash(key);
+        int i = indexFor(hash, table.length);
+        for (HashMapEntry<K,V> e = table[i]; e != null; e = e.next) {
+            Object k;
+            if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
+                V oldValue = e.value;
+                e.value = value;
+                e.recordAccess(this);
+                return oldValue;
+            }
+        }
+
+        modCount++;
+        addEntry(hash, key, value, i);
+        return null;
+    }
+```
 
 ##String，StringBuilder，StringBuffer
 * String 字符串常量  
