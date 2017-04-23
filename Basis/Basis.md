@@ -136,33 +136,15 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 * 类加载器用到字符串，不可变性提供了安全性，以便正确的类被加载。譬如你想加载java.sql.Connection类，而这个值被改成了myhacked.Connection，那么会对你的数据库造成不可知的破坏。
 * 支持hash映射和缓存。 因为字符串是不可变的，所以在它创建的时候hashcode就被缓存了，不需要重新计算。这就使得字符串很适合作为Map中的键，字符串的处理速度要快过其它的键对象。这就是HashMap中的键往往都使用字符串。
 
-##抽象类
+##抽象类&接口
+###抽象类
 1. 由`abstract`关键字定义，不一定包含`abstract`方法
 2. 无法实例化，但可以是其他类的子类
 3. 定义抽象概念，对共通的方法和属性进行规约
 
 苹果和橘子都是水果，但是水果是个概念，不会有实例。
 
-##接口
-
-
-##嵌套类
-##集合
-##泛型
-##访问描述符
-##覆盖，重载
-##进程，线程
-##异常
-
-#JVM
-##四种引用类型
-##垃圾回收
-##类加载
-
-
-## Java 核心概念
-
-#### 接口（Interface）及意义
+###接口
 1. 接口是抽象类型，无法实例化
 2. 用来指定`class`必须实现的方法，使不同类的对象可以利用相同的interface进行沟通
 3. 用来模拟多继承
@@ -188,7 +170,7 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 2. 指定特定数据类型的行为，但是不关心实现
 3. 利用多继承
 
-#### 嵌套类
+##嵌套类
 [Doc](https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html)
 
 ```
@@ -204,10 +186,9 @@ class OuterClass {
     }
 }
 ```
-
 嵌套类氛围静态嵌套类(Nested classes that are declared static are called static nested classes)和内部类(Non-static nested classes are called inner classes)。嵌套类是外部类的成员。内部类可以访问外部类的成员，即使是private修饰的，静态嵌套类则不能。嵌套类作为类的成员，可以被`public`，`protectd`，`private`，`package private`修饰，而外部类则只能是`public`或者`package private`。
 
-##### 何时使用嵌套类
+### 何时使用嵌套类
 1. 是一种组合只在一个地方使用的`class`的逻辑方式
 2. 增加了封装性
 3. 增加代码的可读性和可维护性
@@ -219,34 +200,69 @@ class OuterClass {
 3. 创建内部类对象的时刻并不依赖于外部类对象的创建
 4. 内部类并没有“is-a”关系，他就是一个独立的实体
 
+##集合
+### Java 中集合（Collections）
+1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
+2. 用于存储，检索，操作和传达聚合数据
+
+[集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。
+
+### LinkedList 与 ArrayList 的区别?
+1. LinkedList是基于链表，ArrayList基于数组
+2. get/set，ArrayList更优，add/remove，LinedList更优
+
+### HashMap 和 Hashtable 的区别？
+都实现了Map接口
+
+1. Hashtable是同步的(线程安全)，HashMap是异步的。
+2. Hashtable不接受null作为key或者value，HashMap可以接受一个key为null和多个value为null。
+
+### HashMap 和 ArrayMap 的区别？
+ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
+
+##泛型
+##访问描述符
+top-level：`public`，`package-private`  
+member-level：`public`，`protected`，`private`，`package-private`
+
+##覆盖，重载
+都是Java多态性的表现
+
+`Override`
+
+1. 子类对父类方法的实现进行重新编写，返回值，参数都不变，修改实现。
+2. 不能抛出新的检查异常或者比被重写方法申明更加宽泛的异常
+3. 访问权限不能比父类中被重写的方法的访问权限更低
+4. 子类和父类在同一个包中，那么子类可以重写父类所有方法，除了声明为private和final的方法
+5. 子类和父类不在同一个包中，那么子类只能够重写父类的声明为public和protected的非final方法
+
+`Overload`
+
+同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同
+
+##进程，线程
+[Processes and Threads](https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html)
+
+1. 创建线程比进程需要更少的资源
+2. 进程至少有一个线程，线程存在于进程中
+3. 进程有自己的内存空间，而线程共享进程的资源
+
+##异常
+异常是程序执行期间打乱了正常指令流的事件。
+
+#JVM
+##四种引用类型
+##垃圾回收
+##类加载
+
+
+## Java 核心概念
 #### 父类的静态方法能否被子类重写
 不能
 
 1. 静态方法是编译时就决定的。
 2. Override依赖于类的实例
 
-#### Java 中集合（Collections）
-1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
-2. 用于存储，检索，操作和传达聚合数据
-
-[集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。
-
-#### LinkedList 与 ArrayList 的区别?
-1. LinkedList是基于链表，ArrayList基于数组
-2. get/set，ArrayList更优，add/remove，LinedList更优
-
-#### HashMap 和 Hashtable 的区别？
-都实现了Map接口
-
-1. Hashtable是同步的(线程安全)，HashMap是异步的。
-2. Hashtable不接受null作为key或者value，HashMap可以接受一个key为null和多个value为null。
-
-#### HashMap 和 ArrayMap 的区别？
-ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
-
-#### 阐述下 Java 中的访问描述符（Access Modifiers）
-top-level：`public`，`package-private`  
-member-level：`public`，`protected`，`private`，`package-private`
 
 #### final 与 static 关键字可以用于哪里？它们的作用是什么？
 [final：](https://en.wikipedia.org/wiki/Final_(Java))可以修饰class，method，variable。final不能修饰构造函数，父类的private成员方法不能被子类覆盖，所以是final的。
@@ -282,30 +298,6 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 ```  
 对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。
 
-#### 覆盖（Overriding）与重载（Overloading）的区别在哪里
-都是Java多台性的表现
-
-`Override`
-
-1. 子类对父类方法的实现进行重新编写，返回值，参数都不变，修改实现。
-2. 不能抛出新的检查异常或者比被重写方法申明更加宽泛的异常
-3. 访问权限不能比父类中被重写的方法的访问权限更低
-4. 子类和父类在同一个包中，那么子类可以重写父类所有方法，除了声明为private和final的方法
-5. 子类和父类不在同一个包中，那么子类只能够重写父类的声明为public和protected的非final方法
-
-`Overload`
-
-同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同
-
-#### 进程和线程的区别
-[Processes and Threads](https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html)
-
-1. 创建线程比进程需要更少的资源
-2. 进程至少有一个线程，线程存在于进程中
-3. 进程有自己的内存空间，而线程共享进程的资源
-
-#### 异常分为哪几种类型？以及所谓的handle or declare原则应该如何理解？
-异常是程序执行期间打乱了正常指令流的事件。
 
 #### 简述垃圾回收器的工作原理
 
