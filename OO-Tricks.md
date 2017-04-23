@@ -1,6 +1,6 @@
 #OO Tricks
-## 最少知识原则
-[Law of Demeter](https://hackernoon.com/object-oriented-tricks-2-law-of-demeter-4ecc9becad85)  
+## 最少知识原则 Law of Demeter
+[链接](https://hackernoon.com/object-oriented-tricks-2-law-of-demeter-4ecc9becad85)  
 得墨忒耳定律，亦称为最少知识原则  
 
 ```
@@ -66,3 +66,14 @@ User u = UserService.getUser();
 大部分情况下CQS都是work的，但是对像`Stack.pop`也是例外的。  
 Commands return void and queries return values.  
 Use exceptions rather than returning and checking for error states.
+
+## Death by arguments
+* Argument Objects：如果传递了三个或更多的参数，那么这些变量能否合并成一个对象。
+* Overloading：
+* Builder Pattern：Effective Java
+
+*boolean*  
+参数列表中包含boolean，如果函数名和参数不能准确的传递意图，那么每次都需要查看实际的实现，来理解需要传递的正确值。如果不止一个boolean，那么更加麻烦
+
+*null*  
+公开的api使用@NonNull这样的注解，收到null，就抛出异常`IllegalArgumentException `
