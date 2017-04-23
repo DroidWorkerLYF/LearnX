@@ -310,7 +310,7 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 #### Java虚拟机的特性
 
 
-## 面向对象编程的基本理念与核心设计思想
+## 面向对象
 #### 解释多态性（polymorphism），封装性（encapsulation），内聚（cohesion）以及耦合（coupling）
 继承：[计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%9E%8B_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6))  
 动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。  
@@ -393,7 +393,7 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 快速排序
 
 
-### 原文
+### 参考
 [https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/](https://howtotrainyourjava.com/2016/07/14/java-developer-interview-questions-the-hard-part/)  
 [https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md](https://github.com/JackyAndroid/AndroidInterview-Q-A/blob/master/README-CN.md)  
 [https://ydmmocoo.github.io/2016/06/22/Android面试题整理/](https://ydmmocoo.github.io/2016/06/22/Android面试题整理/)  
