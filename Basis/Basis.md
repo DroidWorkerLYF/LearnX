@@ -136,6 +136,85 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 * 类加载器用到字符串，不可变性提供了安全性，以便正确的类被加载。譬如你想加载java.sql.Connection类，而这个值被改成了myhacked.Connection，那么会对你的数据库造成不可知的破坏。
 * 支持hash映射和缓存。 因为字符串是不可变的，所以在它创建的时候hashcode就被缓存了，不需要重新计算。这就使得字符串很适合作为Map中的键，字符串的处理速度要快过其它的键对象。这就是HashMap中的键往往都使用字符串。
 
+##集合
+### Java 中集合（Collections）
+1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
+2. 用于存储，检索，操作和传达聚合数据
+
+[集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。
+
+### LinkedList 与 ArrayList 的区别?
+1. LinkedList是基于链表，ArrayList基于数组
+2. get/set，ArrayList更优，add/remove，LinedList更优
+
+### HashMap 和 Hashtable 的区别？
+都实现了Map接口
+
+1. Hashtable是同步的(线程安全)，HashMap是异步的。
+2. Hashtable不接受null作为key或者value，HashMap可以接受一个key为null和多个value为null。
+
+### HashMap 和 ArrayMap 的区别？
+ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
+
+##泛型
+
+##进程，线程
+[Processes and Threads](https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html)
+
+1. 创建线程比进程需要更少的资源
+2. 进程至少有一个线程，线程存在于进程中
+3. 进程有自己的内存空间，而线程共享进程的资源
+
+##异常
+异常是程序执行期间打乱了正常指令流的事件。
+
+#JVM
+##四种引用类型
+##垃圾回收
+##类加载
+
+
+## Java 核心概念
+#### 父类的静态方法能否被子类重写
+不能
+
+1. 静态方法是编译时就决定的。
+2. Override依赖于类的实例
+
+
+#### final 与 static 关键字可以用于哪里？它们的作用是什么？
+[final：](https://en.wikipedia.org/wiki/Final_(Java))可以修饰class，method，variable。final不能修饰构造函数，父类的private成员方法不能被子类覆盖，所以是final的。
+
+1. final class无法被继承，可以提供安全性和效率
+2. final method无法被子类重写或隐藏，可以避免，子类带来不期望的行为
+3. final variable只能被初始化一次，不一定要在声明时初始化。如果声明的是一个引用(`reference`)，意味着无法再引用其他对象，但是被引用的对象如果是mutable，那么依然是mutable
+4. final 参数
+
+##### final variable
+没有在声明时初始化的final variable 称为 "blank final" variable
+
+1. 在每个构造函数中初始化
+2. 如果还有static修饰，则在static initializer中初始化
+
+##### anonymous inner class
+匿名内部类中访问outer class的变量要求是final的。
+
+static：修饰变量，方法，static代码块  
+不依赖于实例。
+
+
+#### 简述垃圾回收器的工作原理
+
+#### 你是如何处理内存泄露或者栈溢出问题的？
+
+#### 如何构建不可变的类结构？关键点在哪里？
+
+#### 什么是 JIT 编译？
+
+#### Java虚拟机的特性
+
+
+## 面向对象
 ##抽象类&接口
 ###抽象类
 1. 由`abstract`关键字定义，不一定包含`abstract`方法
@@ -200,27 +279,6 @@ class OuterClass {
 3. 创建内部类对象的时刻并不依赖于外部类对象的创建
 4. 内部类并没有“is-a”关系，他就是一个独立的实体
 
-##集合
-### Java 中集合（Collections）
-1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
-2. 用于存储，检索，操作和传达聚合数据
-
-[集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。
-
-### LinkedList 与 ArrayList 的区别?
-1. LinkedList是基于链表，ArrayList基于数组
-2. get/set，ArrayList更优，add/remove，LinedList更优
-
-### HashMap 和 Hashtable 的区别？
-都实现了Map接口
-
-1. Hashtable是同步的(线程安全)，HashMap是异步的。
-2. Hashtable不接受null作为key或者value，HashMap可以接受一个key为null和多个value为null。
-
-### HashMap 和 ArrayMap 的区别？
-ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
-
-##泛型
 ##访问描述符
 top-level：`public`，`package-private`  
 member-level：`public`，`protected`，`private`，`package-private`
@@ -240,77 +298,7 @@ member-level：`public`，`protected`，`private`，`package-private`
 
 同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同
 
-##进程，线程
-[Processes and Threads](https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html)
 
-1. 创建线程比进程需要更少的资源
-2. 进程至少有一个线程，线程存在于进程中
-3. 进程有自己的内存空间，而线程共享进程的资源
-
-##异常
-异常是程序执行期间打乱了正常指令流的事件。
-
-#JVM
-##四种引用类型
-##垃圾回收
-##类加载
-
-
-## Java 核心概念
-#### 父类的静态方法能否被子类重写
-不能
-
-1. 静态方法是编译时就决定的。
-2. Override依赖于类的实例
-
-
-#### final 与 static 关键字可以用于哪里？它们的作用是什么？
-[final：](https://en.wikipedia.org/wiki/Final_(Java))可以修饰class，method，variable。final不能修饰构造函数，父类的private成员方法不能被子类覆盖，所以是final的。
-
-1. final class无法被继承，可以提供安全性和效率
-2. final method无法被子类重写或隐藏，可以避免，子类带来不期望的行为
-3. final variable只能被初始化一次，不一定要在声明时初始化。如果声明的是一个引用(`reference`)，意味着无法再引用其他对象，但是被引用的对象如果是mutable，那么依然是mutable
-4. final 参数
-
-##### final variable
-没有在声明时初始化的final variable 称为 "blank final" variable
-
-1. 在每个构造函数中初始化
-2. 如果还有static修饰，则在static initializer中初始化
-
-##### anonymous inner class
-匿名内部类中访问outer class的变量要求是final的。
-
-static：修饰变量，方法，static代码块  
-不依赖于实例。
-
-#### 描述下 String，StringBuilder 以及 StringBuffer 区别
-* String 字符串常量  
-* StringBuilder 字符串变量(非线程安全)
-* StringBuffer 字符串变量(线程安全)
-
-String是不可变的，所以每次改变都是创建新的对象，如果经常改变字符串内容会导致产生大量无用对象，触发GC。 StringBuilder比StringBuffer效率更高。单线程时，优先使用StringBuilder。
-
-```
-	1.String S1 = "This is only a" + " simple" + " test";
-	2.StringBuffer Sb = new StringBuilder(“This is only a”)
-						 .append(“ simple”).append(“ test”)
-```  
-对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。
-
-
-#### 简述垃圾回收器的工作原理
-
-#### 你是如何处理内存泄露或者栈溢出问题的？
-
-#### 如何构建不可变的类结构？关键点在哪里？
-
-#### 什么是 JIT 编译？
-
-#### Java虚拟机的特性
-
-
-## 面向对象
 #### 解释多态性（polymorphism），封装性（encapsulation），内聚（cohesion）以及耦合（coupling）
 继承：[计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%9E%8B_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6))  
 动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。  
