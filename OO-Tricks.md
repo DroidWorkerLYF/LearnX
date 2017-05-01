@@ -77,3 +77,22 @@ Use exceptions rather than returning and checking for error states.
 
 *null*  
 公开的api使用@NonNull这样的注解，收到null，就抛出异常`IllegalArgumentException `
+
+## Starter Pattern
+[链接](https://hackernoon.com/object-oriented-tricks-4-starter-pattern-android-edition-1844e1a8522d)  
+这是作者自己命名的一个模式，实际上是：  
+Android中我们启动Activity，都是使用Intent。每个地方都这样使用，实际上违背了DRY原则。最终作者得到的方法是为每个`Activity`添加一个静态的start方法。 
+ 
+```
+public class TargetActivity extends Activity {
+	public static void start(Context context, String value) {
+		Intent starter = new Intent(context, TargetActivity.class);
+		starter.putExtra("key1", value);
+		context.startActivity(starter);
+	}
+	
+	public void onCreate(Bundle savedInstanceState) {
+		...
+	}
+}
+```
