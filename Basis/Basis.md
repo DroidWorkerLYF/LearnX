@@ -128,7 +128,12 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 	2.StringBuffer Sb = new StringBuilder(“This is only a”)
 						 .append(“ simple”).append(“ test”)
 ```  
-对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。
+对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。  
+
+```
+	String s = new String("xyz")创建了几个String对象
+```
+2个，"xyz"创建于字符串常量池，new String()创建在堆中。
 
 ###为什么String要设计成不可变的
 * 字符串常量池的需要，可以节约heap空间
@@ -165,8 +170,17 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 2. 进程至少有一个线程，线程存在于进程中
 3. 进程有自己的内存空间，而线程共享进程的资源
 
+###sleep()和wait()
+1. sleep是Thread类方法，wait是Object的方法
+2. sleep是自动唤醒，wait需要其他线程唤醒
+3. sleep不会释放同步锁，wait会释放同步锁
+4. sleep可以用在任意方法中，wait只能用在同步方法或同步块中
+5. 
+
 ##异常
 异常是程序执行期间打乱了正常指令流的事件。
+
+try{}里面有一个return语句，紧跟在try后的finally{}里的code会在return前执行。
 
 #JVM
 ##四种引用类型
@@ -215,16 +229,23 @@ static：修饰变量，方法，static代码块
 
 
 ## 面向对象
+##封装，继承，多态
+[wiki](https://zh.wikipedia.org/wiki/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1)
+###封装
+###继承
+###多态
+###抽象
 ##抽象类&接口
 ###抽象类
 1. 由`abstract`关键字定义，不一定包含`abstract`方法
 2. 无法实例化，但可以是其他类的子类
-3. 定义抽象概念，对共通的方法和属性进行规约
+3. 可以有构造函数
+4. 定义抽象概念，对共通的方法和属性进行规约
 
 苹果和橘子都是水果，但是水果是个概念，不会有实例。
 
 ###接口
-1. 接口是抽象类型，无法实例化
+1. 接口是抽象类型，由interface修饰，无法实例化
 2. 用来指定`class`必须实现的方法，使不同类的对象可以利用相同的interface进行沟通
 3. 用来模拟多继承
 4. 接口无法实现另一个接口
@@ -283,7 +304,7 @@ class OuterClass {
 top-level：`public`，`package-private`  
 member-level：`public`，`protected`，`private`，`package-private`
 
-##覆盖，重载
+##重写，重载
 都是Java多态性的表现
 
 `Override`
@@ -296,7 +317,7 @@ member-level：`public`，`protected`，`private`，`package-private`
 
 `Overload`
 
-同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同
+同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同，比如构造方法
 
 
 #### 解释多态性（polymorphism），封装性（encapsulation），内聚（cohesion）以及耦合（coupling）
