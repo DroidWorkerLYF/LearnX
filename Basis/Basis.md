@@ -182,6 +182,14 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 ##异常
 异常是程序执行期间打乱了正常指令流的事件。
 
+###运行时异常
+继承于RuntimeException，运行时才会抛出
+
+###编译时异常
+继承于Exception又不属于RuntimeException，必须在编译时捕获，否则无法编译通过。
+
+###try catch finally执行顺序
+先执行`try`，代码发生异常执行`catch`，最后一定会执行finally。
 try{}里面有一个return语句，紧跟在try后的finally{}里的code会在return前执行。
 
 ## 面向对象
@@ -401,6 +409,8 @@ member-level：`public`，`protected`，`private`，`package-private`
 ##四种引用类型
 ##垃圾回收
 ##类加载
+
+
 #### 你是如何理解干净的代码（Clean Code）与技术负载（Technical Debt）的
 
 
