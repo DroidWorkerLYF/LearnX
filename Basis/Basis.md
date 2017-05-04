@@ -175,26 +175,44 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 2. sleep是自动唤醒，wait需要其他线程唤醒
 3. sleep不会释放同步锁，wait会释放同步锁
 4. sleep可以用在任意方法中，wait只能用在同步方法或同步块中
-5. 
+
+##IO
+
 
 ##异常
 异常是程序执行期间打乱了正常指令流的事件。
 
 try{}里面有一个return语句，紧跟在try后的finally{}里的code会在return前执行。
 
-#JVM
-##四种引用类型
-##垃圾回收
-##类加载
+## 面向对象
+###封装，继承，多态
+[wiki](https://zh.wikipedia.org/wiki/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1)
+####封装
 
+####继承
 
-## Java 核心概念
-#### 父类的静态方法能否被子类重写
+####多态
+
+####抽象
+
+####继承（Inheritance）与聚合（Aggregation）的区别在哪里
+继承(is a)是从上到下，聚合(has a)是部分与整体
+
+####解释多态性（polymorphism），封装性（encapsulation），内聚（cohesion）以及耦合（coupling）
+继承：[计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%9E%8B_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6))  
+动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。  
+静态多态：函数重载，运算符重载，参数化多态(编译期)  
+
+封装性：[将抽象性函数接口的实现细节部分包装、隐藏起来的方法,防止外界调用端，去访问对象内部实现细节的手段](https://zh.wikipedia.org/wiki/%E5%B0%81%E8%A3%9D_(%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88))  
+让代码更容易理解与维护，也加强了代码的安全性。
+
+内聚，耦合：[wiki](https://zh.wikipedia.org/wiki/%E5%85%A7%E8%81%9A%E6%80%A7_(%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8))
+
+####父类的静态方法能否被子类重写
 不能
 
 1. 静态方法是编译时就决定的。
 2. Override依赖于类的实例
-
 
 #### final 与 static 关键字可以用于哪里？它们的作用是什么？
 [final：](https://en.wikipedia.org/wiki/Final_(Java))可以修饰class，method，variable。final不能修饰构造函数，父类的private成员方法不能被子类覆盖，所以是final的。
@@ -216,25 +234,85 @@ try{}里面有一个return语句，紧跟在try后的finally{}里的code会在re
 static：修饰变量，方法，static代码块  
 不依赖于实例。
 
+####静态代码块，构造代码块，构造函数以及JAVA类初始化顺序
+[链接](http://www.cnblogs.com/Qian123/p/5713440.html)
+>静态代码块：用staitc声明，jvm加载类时执行，仅执行一次  
+构造代码块：类中直接用{}定义，每一次创建对象时执行。  
+执行顺序优先级：静态块,main(),构造块,构造方法。
 
-#### 简述垃圾回收器的工作原理
+```
+class Parent {
+        /* 静态变量 */
+    public static String p_StaticField = "父类--静态变量";
+         /* 变量 */
+    public String    p_Field = "父类--变量";
+    protected int    i    = 9;
+    protected int    j    = 0;
+        /* 静态初始化块 */
+    static {
+        System.out.println( p_StaticField );
+        System.out.println( "父类--静态初始化块" );
+    }
+        /* 初始化块 */
+    {
+        System.out.println( p_Field );
+        System.out.println( "父类--初始化块" );
+    }
+        /* 构造器 */
+    public Parent()
+    {
+        System.out.println( "父类--构造器" );
+        System.out.println( "i=" + i + ", j=" + j );
+        j = 20;
+    }
+}
 
-#### 你是如何处理内存泄露或者栈溢出问题的？
+public class SubClass extends Parent {
+         /* 静态变量 */
+    public static String s_StaticField = "子类--静态变量";
+         /* 变量 */
+    public String s_Field = "子类--变量";
+        /* 静态初始化块 */
+    static {
+        System.out.println( s_StaticField );
+        System.out.println( "子类--静态初始化块" );
+    }
+       /* 初始化块 */
+    {
+        System.out.println( s_Field );
+        System.out.println( "子类--初始化块" );
+    }
+       /* 构造器 */
+    public SubClass()
+    {
+        System.out.println( "子类--构造器" );
+        System.out.println( "i=" + i + ",j=" + j );
+    }
 
-#### 如何构建不可变的类结构？关键点在哪里？
 
-#### 什么是 JIT 编译？
+        /* 程序入口 */
+    public static void main( String[] args )
+    {
+        System.out.println( "子类main方法" );
+        new SubClass();
+    }
+}
+```
+结果：  
+父类--静态变量  
+父类--静态初始化块  
+子类--静态变量  
+子类--静态初始化块  
+子类main方法  
+父类--变量  
+父类--初始化块  
+父类--构造器  
+i=9, j=0  
+子类--变量  
+子类--初始化块  
+子类--构造器  
+i=9,j=20  
 
-#### Java虚拟机的特性
-
-
-## 面向对象
-##封装，继承，多态
-[wiki](https://zh.wikipedia.org/wiki/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1)
-###封装
-###继承
-###多态
-###抽象
 ##抽象类&接口
 ###抽象类
 1. 由`abstract`关键字定义，不一定包含`abstract`方法
@@ -315,24 +393,14 @@ member-level：`public`，`protected`，`private`，`package-private`
 4. 子类和父类在同一个包中，那么子类可以重写父类所有方法，除了声明为private和final的方法
 5. 子类和父类不在同一个包中，那么子类只能够重写父类的声明为public和protected的非final方法
 
-`Overload`
-
+`Overload`  
 同一个类中，相同方法名但是参数不同。返回类型可以相同也可以不同，比如构造方法
 
 
-#### 解释多态性（polymorphism），封装性（encapsulation），内聚（cohesion）以及耦合（coupling）
-继承：[计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%9E%8B_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6))  
-动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。  
-静态多态：函数重载，运算符重载，参数化多态(编译期)  
-
-封装性：[将抽象性函数接口的实现细节部分包装、隐藏起来的方法,防止外界调用端，去访问对象内部实现细节的手段](https://zh.wikipedia.org/wiki/%E5%B0%81%E8%A3%9D_(%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88))  
-让代码更容易理解与维护，也加强了代码的安全性。
-
-内聚，耦合：[wiki](https://zh.wikipedia.org/wiki/%E5%85%A7%E8%81%9A%E6%80%A7_(%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8))
-
-#### 继承（Inheritance）与聚合（Aggregation）的区别在哪里
-继承(is a)是从上到下，聚合(has a)是部分与整体
-
+#JVM
+##四种引用类型
+##垃圾回收
+##类加载
 #### 你是如何理解干净的代码（Clean Code）与技术负载（Technical Debt）的
 
 
