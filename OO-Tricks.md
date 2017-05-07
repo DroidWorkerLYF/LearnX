@@ -96,3 +96,8 @@ public class TargetActivity extends Activity {
 	}
 }
 ```
+
+## Boy Scout Rule
+因为破窗效应。  
+>As Uncle Bob says, it’s not enough to write code well, the code has to be kept clean over time  
+>You see evil and you destroy it
