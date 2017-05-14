@@ -98,6 +98,16 @@ public class TargetActivity extends Activity {
 ```
 
 ## Boy Scout Rule
-因为破窗效应。  
+[链接](https://hackernoon.com/object-oriented-tricks-5-boy-scout-rule-cec82aea3b81)  
+破窗效应。  
 >As Uncle Bob says, it’s not enough to write code well, the code has to be kept clean over time  
 >You see evil and you destroy it
+
+## SLAP your functions
+[链接](https://hackernoon.com/object-oriented-tricks-6-slap-your-functions-a13d25a7d994)  
+Single level of abstraction principle
+>Code within a given segment/block should be at the same level of abstraction  
+
+一个区块的代码应该保持相同的抽象水平
+
+>Functions should do just one thing, and they should do it well
