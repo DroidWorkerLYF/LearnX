@@ -146,7 +146,17 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
 2. 用于存储，检索，操作和传达聚合数据
 
-[集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。
+[集合框架](https://docs.oracle.com/javase/tutorial/collections/intro/)：集合框架适用于展示和操作集合的统一框架，都包含有接口，实现，算法。C++的STL。  
+
+Java集合框架的好处：  
+
+1. 减少编程工作量，专注于核心业务
+2. 增加程序运行速度和质量
+3. 允许无关API之间相互调用
+4. 减少设计新API的工作量
+5. 促进重用
+
+
 
 ### LinkedList 与 ArrayList 的区别?
 1. LinkedList是基于链表，ArrayList基于数组
@@ -336,7 +346,7 @@ i=9,j=20
 3. 用来模拟多继承
 4. 接口无法实现另一个接口
 
-规范，扩展，回调
+接口的意义：规范，扩展，回调
 
 #### 比较抽象类和接口，何时使用哪一个？
 1. 抽象类可以对共通的方法和属性提供一个实现，而接口不能
@@ -372,7 +382,7 @@ class OuterClass {
     }
 }
 ```
-嵌套类氛围静态嵌套类(Nested classes that are declared static are called static nested classes)和内部类(Non-static nested classes are called inner classes)。嵌套类是外部类的成员。内部类可以访问外部类的成员，即使是private修饰的，静态嵌套类则不能。嵌套类作为类的成员，可以被`public`，`protectd`，`private`，`package private`修饰，而外部类则只能是`public`或者`package private`。
+嵌套类分为静态嵌套类(Nested classes that are declared static are called static nested classes)和内部类(Non-static nested classes are called inner classes)。嵌套类是外部类的成员。内部类可以访问外部类的成员，即使是private修饰的，静态嵌套类则不能。嵌套类作为类的成员，可以被`public`，`protectd`，`private`，`package private`修饰，而外部类则只能是`public`或者`package private`。
 
 ### 何时使用嵌套类
 1. 是一种组合只在一个地方使用的`class`的逻辑方式
