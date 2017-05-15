@@ -156,7 +156,10 @@ Java集合框架的好处：
 4. 减少设计新API的工作量
 5. 促进重用
 
-
+###ArrayList继承AbstractList并且实现了List接口，AbstractList已经实现了List接口，这是为什么
+1. 便于查看代码，而不用遍历整个结构
+2. AbstractList这样的类只是用于减少实现List接口的class的重复代码
+3. 如果AbstractList以后实现的接口改变了，那么会导致之前的代码编译失败
 
 ### LinkedList 与 ArrayList 的区别?
 1. LinkedList是基于链表，ArrayList基于数组
