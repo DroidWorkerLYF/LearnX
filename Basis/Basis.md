@@ -161,6 +161,26 @@ Java集合框架的好处：
 2. AbstractList这样的类只是用于减少实现List接口的class的重复代码
 3. 如果AbstractList以后实现的接口改变了，那么会导致之前的代码编译失败
 
+###ArrayList，LinkedList与Vector的区别
+三者都实现了`List`接口  
+
+###ArrayList
+
+1. `ArrayList`是`List`接口的可变大小数组实现，支持所有list的操作，并且接受所有元素参数，包括`Null`
+2. `ArrayList`提供方法来操作内部存储数据的数组的大小
+3. `ArrayList`几乎等同于`Vector`，不过不是同步的
+4. 添加n个元素需要O(n)的时间，恒定分摊时间
+
+实现了`RandomAccess`接口，传统的for循环比迭代器遍历要快
+```
+for (int i=0, n=list.size(); i &lt; n; i++)
+	list.get(i);
+	
+runs faster than
+for (Iterator i=list.iterator(); i.hasNext(); )
+	i.next();
+```
+
 ### LinkedList 与 ArrayList 的区别?
 1. LinkedList是基于链表，ArrayList基于数组
 2. get/set，ArrayList更优，add/remove，LinedList更优
