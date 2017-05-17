@@ -156,34 +156,69 @@ Java集合框架的好处：
 4. 减少设计新API的工作量
 5. 促进重用
 
+![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Basis/resource/CollectionFramework.png?raw=true)
+
 ###ArrayList继承AbstractList并且实现了List接口，AbstractList已经实现了List接口，这是为什么
 1. 便于查看代码，而不用遍历整个结构
 2. AbstractList这样的类只是用于减少实现List接口的class的重复代码
 3. 如果AbstractList以后实现的接口改变了，那么会导致之前的代码编译失败
 
-###ArrayList，LinkedList与Vector的区别
+###ArrayList，LinkedList与Vector
 三者都实现了`List`接口  
 
-###ArrayList
+####ArrayList
 
 1. `ArrayList`是`List`接口的可变大小数组实现，支持所有list的操作，并且接受所有元素参数，包括`Null`
 2. `ArrayList`提供方法来操作内部存储数据的数组的大小
-3. `ArrayList`几乎等同于`Vector`，不过不是同步的
-4. 添加n个元素需要O(n)的时间，恒定分摊时间
+3. `ArrayList`几乎等同于`Vector`，不过不是同步的，fail-fast
+4. `size`,`isEmpty`,`get`,`set`,`iterator`,`listIterator`操作时间复杂度都是常量，添加n个元素需要O(n)的时间，恒定分摊时间，其他操作都是线性时间
 
-实现了`RandomAccess`接口，传统的for循环比迭代器遍历要快
+####LinkedList
+1. `LinkedList`是`List`和`Deque(双端队列)`的双链表实现，支持所有list的操作，并且接受所有元素参数，包括`Null`
+2. 索引操作将从list靠近指定索引的一端(头部或尾部)开始遍历
+3. 不是同步的，fail-fast
+
+####Vector
+1. 实现可增长的对象数组，大小可以根据需要增加或减小
+2. `Vector`会优化存储，使用capacity和capacityIncrement
+3. 同步的，fail-fast
+
+`ArrayList`是一个可变大小数组，可以动态增长大小，随机访问快，删除非头尾元素慢，新增元素时，空间不够，则操作慢且费时，非线程安全。  
+`LinkedList`是一个双链表，添加删除元素快，但是访问元素慢，不耗费多余资源，非线程安全。  
+`Vector`类似`ArrayList`，不过是同步的，与`ArrayList`一样，添加更多元素时请求更大空间，`Vector`请求其大小的双倍空间，`ArrayList`通常是每次增大50%。  
+
+最终发现需要增长大小时  
+`ArrayList`
+
 ```
-for (int i=0, n=list.size(); i &lt; n; i++)
-	list.get(i);
-	
-runs faster than
-for (Iterator i=list.iterator(); i.hasNext(); )
-	i.next();
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        if (newCapacity - minCapacity < 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE > 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
 ```
 
-### LinkedList 与 ArrayList 的区别?
-1. LinkedList是基于链表，ArrayList基于数组
-2. get/set，ArrayList更优，add/remove，LinedList更优
+`Vector`
+
+```
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + ((capacityIncrement > 0) ?
+                                         capacityIncrement : oldCapacity);
+        if (newCapacity - minCapacity < 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE > 0)
+            newCapacity = hugeCapacity(minCapacity);
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+```
 
 ### HashMap 和 Hashtable 的区别？
 都实现了Map接口
