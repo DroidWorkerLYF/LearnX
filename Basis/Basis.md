@@ -141,6 +141,9 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 * 类加载器用到字符串，不可变性提供了安全性，以便正确的类被加载。譬如你想加载java.sql.Connection类，而这个值被改成了myhacked.Connection，那么会对你的数据库造成不可知的破坏。
 * 支持hash映射和缓存。 因为字符串是不可变的，所以在它创建的时候hashcode就被缓存了，不需要重新计算。这就使得字符串很适合作为Map中的键，字符串的处理速度要快过其它的键对象。这就是HashMap中的键往往都使用字符串。
 
+###Switch能都用String做参数
+jdk1.7之后支持，1.7之前支持`byte`，`short`，`char`，`int`，并且会自动转换为int类型，精度大于int的不会。
+
 ##集合
 ### Java 中集合（Collections）
 1. 集合，也可称作容器，是一个将多个元素组成一个单元的object。
@@ -155,6 +158,8 @@ Java集合框架的好处：
 3. 允许无关API之间相互调用
 4. 减少设计新API的工作量
 5. 促进重用
+
+[集合框架的层次结构和使用规则梳理](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20集合框架的层次结构和使用规则梳理.md)
 
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Basis/resource/CollectionFramework.png?raw=true)
 
@@ -221,10 +226,21 @@ private void grow(int minCapacity) {
 ```
 
 ### HashMap 和 Hashtable 的区别？
-都实现了Map接口
-
 1. Hashtable是同步的(线程安全)，HashMap是异步的。
 2. Hashtable不接受null作为key或者value，HashMap可以接受一个key为null和多个value为null。
+
+####HashMap
+[HashMap分析](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20HashMap源码分析.md)
+
+1. 实现了`Map`接口，并提供所有可选操作，接受null作为key和value。
+2. 非同步版本的`Hashtable`
+3. `get`和`put`操作都是常量时间，遍历操作受到`capacity`和key-value对数量的影响
+4. 初始容量(capacity)和load factor影响性能
+
+####Hashtable
+1. 接受任何null以外的对象作为key和value
+2. 作为key的对象必须实现hashcode和equals方法
+
 
 ### HashMap 和 ArrayMap 的区别？
 ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
@@ -239,10 +255,25 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 3. 进程有自己的内存空间，而线程共享进程的资源
 
 ###sleep()和wait()
-1. sleep是Thread类方法，wait是Object的方法
-2. sleep是自动唤醒，wait需要其他线程唤醒
+1. sleep是Thread类方法，调用此方法的线程sleep，比如a线程中调用b.sleep()，实际是a sleep。
+2. wait是Object的方法
+3. sleep是自动唤醒，wait需要其他线程唤醒
 3. sleep不会释放同步锁，wait会释放同步锁
-4. sleep可以用在任意方法中，wait只能用在同步方法或同步块中
+4. sleep可以用在任意方法中，wait，notify，notifyAll只能用在同步方法或同步块中
+
+###线程池
+[ThreadPool用法与示例](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20ThreadPool用法与示例.md)
+
+###ThreadLocal
+[](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20ThreadLocal的使用规则和源码分析.md)
+
+###方发锁，对象锁，类锁
+[](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20方法锁、对象锁和类锁的意义和区别.md)
+
+###线程同步
+[](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20线程同步的方法：sychronized、lock、reentrantLock分析.md)
+
+###生产者消费者
 
 ##IO
 
@@ -260,27 +291,25 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 先执行`try`，代码发生异常执行`catch`，最后一定会执行finally。
 try{}里面有一个return语句，紧跟在try后的finally{}里的code会在return前执行。
 
+[Excption与Error包结构,OOM和SOF](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20Excption与Error包结构%2COOM和SOF.md)
+
 ## 面向对象
 ###封装，继承，多态
 [wiki](https://zh.wikipedia.org/wiki/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1)
+
 ####封装
+将抽象性函数接口的实现细节部分包装、隐藏起来的方法,防止外界调用端，去访问对象内部实现细节的手段。  
+让代码更容易理解与维护，也加强了代码的安全性。[Wiki](https://zh.wikipedia.org/wiki/%E5%B0%81%E8%A3%9D_(%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88))  
 
 ####继承
+计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。[Wiki](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%9E%8B_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6))
 
 ####多态
-
-####抽象
+动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。  
+静态多态：函数重载，运算符重载，参数化多态(编译期) 
 
 ####继承（Inheritance）与聚合（Aggregation）的区别在哪里
 继承(is a)是从上到下，聚合(has a)是部分与整体
-
-####解释多态性（polymorphism），封装性（encapsulation），内聚（cohesion）以及耦合（coupling）
-继承：[计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%9E%8B_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6))  
-动态多态：通过类(接口)继承机制和虚函数机制生效于运行时。  
-静态多态：函数重载，运算符重载，参数化多态(编译期)  
-
-封装性：[将抽象性函数接口的实现细节部分包装、隐藏起来的方法,防止外界调用端，去访问对象内部实现细节的手段](https://zh.wikipedia.org/wiki/%E5%B0%81%E8%A3%9D_(%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88))  
-让代码更容易理解与维护，也加强了代码的安全性。
 
 内聚，耦合：[wiki](https://zh.wikipedia.org/wiki/%E5%85%A7%E8%81%9A%E6%80%A7_(%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8))
 
@@ -307,8 +336,13 @@ try{}里面有一个return语句，紧跟在try后的finally{}里的code会在re
 ##### anonymous inner class
 匿名内部类中访问outer class的变量要求是final的。
 
-static：修饰变量，方法，static代码块  
-不依赖于实例。
+static：
+
+1. 修饰变量，方法，static代码块
+2. static修饰的会在类加载时存放到方法区
+3. 不依赖于实例，也就不能使用this和super关键字
+4. 静态代码块只在类加载到内存时执行一次，如果有多个，则按照在类中的出现顺序执行
+5. 只能在内部类中定义静态类，如果内部类不是静态内部类，则变量和方法也不能用static修饰
 
 ####静态代码块，构造代码块，构造函数以及JAVA类初始化顺序
 [链接](http://www.cnblogs.com/Qian123/p/5713440.html)
@@ -475,6 +509,11 @@ member-level：`public`，`protected`，`private`，`package-private`
 
 #JVM
 ##四种引用类型
+1. 强引用-StrongReference
+2. 软引用-SoftReference
+3. 弱引用-WeakReference
+4. 虚引用-PhantomReference
+
 ##垃圾回收
 ##类加载
 
