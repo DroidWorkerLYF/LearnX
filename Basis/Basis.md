@@ -38,7 +38,7 @@ false
 ```
 public static Integer valueOf(int i) {
         return  i >= 128 || i < -128 ? new Integer(i) : SMALL_VALUES[i + 128];
-    }
+}
 ```
 
 ####其他
@@ -249,10 +249,13 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 
 ##进程，线程
 [Processes and Threads](https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html)
+####进程
+进程包含完整的执行环境。一个进程通常有一套完整的私有的基本运行时资源。每个进程有自己的内存空间。  
+为了帮助进程之间通信，大部分操作系统支持IPC，例如管道和套接字。
 
-1. 创建线程比进程需要更少的资源
-2. 进程至少有一个线程，线程存在于进程中
-3. 进程有自己的内存空间，而线程共享进程的资源
+####线程
+线程可称为轻量级的进程，进程和线程都提供执行环境，但是创建进程比线程需要更少的资源。  
+线程存在于进程中，每个进程有至少一个线程，线程间共享进程的资源包括内存和打开的文件
 
 ###sleep()和wait()
 1. sleep是Thread类方法，调用此方法的线程sleep，比如a线程中调用b.sleep()，实际是a sleep。
@@ -265,18 +268,24 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 [ThreadPool用法与示例](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20ThreadPool用法与示例.md)
 
 ###ThreadLocal
-[](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20ThreadLocal的使用规则和源码分析.md)
+[参考1](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20ThreadLocal的使用规则和源码分析.md)
+[参考2](http://blog.csdn.net/lufeng20/article/details/24314381)
 
-###方发锁，对象锁，类锁
+###线程安全
+多个线程访问时，不管运行时环境采用何种调度方式，在代码中不需要任何额外的同步，这个类都能表现出正确的行为，那么这个类就是线程安全的。
+
+####volaitle
+保持单个简单volatile变量的读/写操作的具有原子性
+
+####方发锁，对象锁，类锁
 [](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20方法锁、对象锁和类锁的意义和区别.md)
 
-###线程同步
+####线程同步
 [](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20线程同步的方法：sychronized、lock、reentrantLock分析.md)
 
 ###生产者消费者
 
 ##IO
-
 
 ##异常
 异常是程序执行期间打乱了正常指令流的事件。
