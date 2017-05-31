@@ -527,9 +527,6 @@ member-level：`public`，`protected`，`private`，`package-private`
 ##类加载
 
 
-#### 你是如何理解干净的代码（Clean Code）与技术负载（Technical Debt）的
-
-
 #### 描述下常用的重构技巧
 1. 重复代码的提炼
 2. 分割冗长代码
@@ -552,6 +549,9 @@ member-level：`public`，`protected`，`private`，`package-private`
 5. 依赖反转原则(Dependency inversion principle)
 
 #### 其他的譬如 KISS,DRY,YAGNI 等原则又是什么含义
+* Keep it simple, stupid
+* Don't repeat yourself
+* You ain't gonna need it
 
 #### 什么是设计模式（Design Patterns）？你知道哪些设计模式？
 [设计模式](https://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_(%E8%AE%A1%E7%AE%97%E6%9C%BA))是对软件设计中普遍存在（反复出现）的各种问题，所提出的解决方案。是描述在各种不同情况下，要怎么解决问题的一种方案。  
