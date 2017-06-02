@@ -527,9 +527,6 @@ member-level：`public`，`protected`，`private`，`package-private`
 ##类加载
 
 
-#### 你是如何理解干净的代码（Clean Code）与技术负载（Technical Debt）的
-
-
 #### 描述下常用的重构技巧
 1. 重复代码的提炼
 2. 分割冗长代码
@@ -552,32 +549,39 @@ member-level：`public`，`protected`，`private`，`package-private`
 5. 依赖反转原则(Dependency inversion principle)
 
 #### 其他的譬如 KISS,DRY,YAGNI 等原则又是什么含义
+* Keep it simple, stupid
+* Don't repeat yourself
+* You ain't gonna need it
 
 #### 什么是设计模式（Design Patterns）？你知道哪些设计模式？
 [设计模式](https://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_(%E8%AE%A1%E7%AE%97%E6%9C%BA))是对软件设计中普遍存在（反复出现）的各种问题，所提出的解决方案。是描述在各种不同情况下，要怎么解决问题的一种方案。  
 
-1. 抽象工厂(Abstract factory pattern)
-2. 工厂方法(Factory method pattern)
-3. 生成器(Builder Pattern)
-4. 原型模式
-5. 单例模式
-6. 适配器模式
-7. 组合模式
-8. 修饰模式
-9. 外观模式
-10. 责任链
-11. 迭代器
-12. 终结者
-13. 备忘录
-14. 观察者
-15. 策略模式
-16. 模板方法
-17. 访问者
+1. 单例模式
+2. Builder模式
+3. 原型模式
+4. 工厂方法模式
+5. 抽象工厂模式
+6. 策略模式
+7. 状态模式
+8. 责任链模式
+9. 解释器模式
+10. 命令模式
+11. 观察者模式
+12. 备忘录模式
+13. 迭代器模式
+14. 模板方法模式
+15. 访问者模式
+16. 中介者模式
+17. 代理模式
+18. 组合模式
+19. 适配器模式
+20. 装饰模式
+21. 享元模式
+22. 外观模式
+23. 桥接模式
 
 #### 你有了解过存在哪些反模式（Anti-Patterns）吗？
 一个[反面模式](https://zh.wikipedia.org/wiki/%E5%8F%8D%E9%9D%A2%E6%A8%A1%E5%BC%8F)(anti-pattern或antipattern)指的是在实践中明显出现但又低效或是有待优化的设计模式，是用来解决问题的带有共同性的不良方法。它们已经经过研究并分类，以防止日后重蹈覆辙，并能在研发尚未投产的系统时辨认出来。
-
-#### 你会如何设计登陆舰/数学表达式计算程序/一条龙？
 
 #### 尝试编写如下代码
 1. 计算指定数字的阶乘
