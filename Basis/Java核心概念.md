@@ -209,6 +209,8 @@ Java集合框架的好处：
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Basis/resource/CollectionFramework.png?raw=true)
 
 ### List
+有序的，可以控制元素的插入位置，可以随意访问指定位置的元素，允许重复的元素，接受null。
+
 #### ArrayList继承AbstractList并且实现了List接口，AbstractList已经实现了List接口，这是为什么
 1. 便于查看代码，而不用遍历整个结构
 2. AbstractList这样的类只是用于减少实现List接口的class的重复代码
@@ -272,6 +274,8 @@ private void grow(int minCapacity) {
 ```
 
 ### Map
+键和值映射的对象，不包含重复的键，每个键只对应一个值。
+
 #### HashMap 和 Hashtable 的区别？
 1. Hashtable是同步的(线程安全)，HashMap是异步的。
 2. Hashtable不接受null作为key或者value，HashMap可以接受一个key为null和多个value为null。
@@ -292,10 +296,16 @@ private void grow(int minCapacity) {
 ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
 
 ##### LinkedHashMap
+双链表，有序。
 
 ### Set
+不包含重复元素的集合，只允许最多一个null。
+
+### Queue
+设计用来在处理之前保留元素的结合。FIFO。
 
 ### Android SparseArray
+使用`Integer`作为键的类型。与数据不同，索引可能不是连续的。比使用`HashMap`有更好的内存效率，因为避免了对键值得自动装箱，而且value也不需要依赖额外数据结构。`SparseArray`使用数组来存储键对应的值，使用二分法来查找键，所以包含大量元素时比`HashMap	`慢。量级在几百个元素时，性能差距不明显，50%以内。
 
 ## 泛型
 
