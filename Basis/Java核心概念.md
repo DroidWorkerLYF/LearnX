@@ -208,27 +208,28 @@ Java集合框架的好处：
 
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Basis/resource/CollectionFramework.png?raw=true)
 
-### ArrayList继承AbstractList并且实现了List接口，AbstractList已经实现了List接口，这是为什么
+### List
+#### ArrayList继承AbstractList并且实现了List接口，AbstractList已经实现了List接口，这是为什么
 1. 便于查看代码，而不用遍历整个结构
 2. AbstractList这样的类只是用于减少实现List接口的class的重复代码
 3. 如果AbstractList以后实现的接口改变了，那么会导致之前的代码编译失败
 
-### ArrayList，LinkedList与Vector
+#### ArrayList，LinkedList与Vector
 三者都实现了`List`接口  
 
-#### ArrayList
+##### ArrayList
 
 1. `ArrayList`是`List`接口的可变大小数组实现，支持所有list的操作，并且接受所有元素参数，包括`Null`
 2. `ArrayList`提供方法来操作内部存储数据的数组的大小
 3. `ArrayList`几乎等同于`Vector`，不过不是同步的，fail-fast
 4. `size`,`isEmpty`,`get`,`set`,`iterator`,`listIterator`操作时间复杂度都是常量，添加n个元素需要O(n)的时间，恒定分摊时间，其他操作都是线性时间
 
-#### LinkedList
+##### LinkedList
 1. `LinkedList`是`List`和`Deque(双端队列)`的双链表实现，支持所有list的操作，并且接受所有元素参数，包括`Null`
 2. 索引操作将从list靠近指定索引的一端(头部或尾部)开始遍历
 3. 不是同步的，fail-fast
 
-#### Vector
+##### Vector
 1. 实现可增长的对象数组，大小可以根据需要增加或减小
 2. `Vector`会优化存储，使用capacity和capacityIncrement
 3. 同步的，fail-fast
@@ -270,11 +271,12 @@ private void grow(int minCapacity) {
     }
 ```
 
-### HashMap 和 Hashtable 的区别？
+### Map
+#### HashMap 和 Hashtable 的区别？
 1. Hashtable是同步的(线程安全)，HashMap是异步的。
 2. Hashtable不接受null作为key或者value，HashMap可以接受一个key为null和多个value为null。
 
-#### HashMap
+##### HashMap
 [HashMap分析](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20HashMap源码分析.md)
 
 1. 实现了`Map`接口，并提供所有可选操作，接受null作为key和value。
@@ -282,12 +284,18 @@ private void grow(int minCapacity) {
 3. `get`和`put`操作都是常量时间，遍历操作受到`capacity`和key-value对数量的影响
 4. 初始容量(capacity)和load factor影响性能
 
-#### Hashtable
+##### Hashtable
 1. 接受任何null以外的对象作为key和value
 2. 作为key的对象必须实现hashcode和equals方法
 
-### HashMap 和 ArrayMap 的区别？
+##### HashMap 和 ArrayMap 的区别？
 ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
+
+##### LinkedHashMap
+
+### Set
+
+### Android SparseArray
 
 ## 泛型
 
