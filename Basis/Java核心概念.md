@@ -170,10 +170,10 @@ String是不可变的，所以每次改变都是创建新的对象，如果经�
 
 ```
 	1.String S1 = "This is only a" + " simple" + " test";
-	2.StringBuffer Sb = new StringBuilder(“This is only a”)
+	2.StringBuilder Sb = new StringBuilder(“This is only a”)
 						 .append(“ simple”).append(“ test”)
 ```  
-对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以比StringBuffer还要快。  
+对于JVM 1其实就是`String S1 = "This is only a simple test"`，所以`比StringBuilder`还要快。 
 
 ```
 	String s = new String("xyz")创建了几个String对象
@@ -285,7 +285,6 @@ private void grow(int minCapacity) {
 #### Hashtable
 1. 接受任何null以外的对象作为key和value
 2. 作为key的对象必须实现hashcode和equals方法
-
 
 ### HashMap 和 ArrayMap 的区别？
 ArrayMap内部使用一个integer数组维护每个item的hash code，一个Object数组存储key/value对，这样避免了每次put都创建额外的对象，而且增长大小的时候，不需要重建整个Hash map。所以ArrayMap被用来更好的平衡内存使用，但是包含大量item时，效率不及传统的HashMap。
