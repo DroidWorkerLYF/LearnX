@@ -12,3 +12,8 @@
 [链接1](https://medium.com/google-developers/re-animation-7869722af206)
 
 链接2是作者做了一些udpate。
+
+### How to speed up your slow Gradle builds
+[链接](https://android.jlelse.eu/how-to-speed-up-your-slow-gradle-builds-5d9a9545f91a)  
+[Google I/O 视频](https://www.youtube.com/watch?v=7ll-rkLCtyk)  
+给了一些加快build速度的建议。
