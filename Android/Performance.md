@@ -16,3 +16,14 @@
 * 多维数组变为一维，当然设计API，对外时是个例外。
 
 ### Prefer Static Over Virtual
+如果你的方法不需要访问对象的实例，那么使用`static`，调用会快15%-20%。同时也可以通过方法签名来直观的体现，调用这个方法不会改变对象的状态。
+
+### Use Static Final For Constants
+常量要记得使用`static final`修饰。
+
+```
+static final int intVal = 42;
+static final String strVal = "Hello, world!";
+```
+
+### Avoid Internal Getters/Setters
