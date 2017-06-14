@@ -341,6 +341,7 @@ ArrayMap内部使用一个integer数组维护每个item的hash code，一个Obje
 
 #### 方发锁，对象锁，类锁
 [](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20方法锁、对象锁和类锁的意义和区别.md)
+[](http://www.programgo.com/article/35063256545/)
 
 #### 线程同步
 [](https://github.com/helen-x/AndroidInterview/blob/master/java/%5BJava%5D%20线程同步的方法：sychronized、lock、reentrantLock分析.md)
