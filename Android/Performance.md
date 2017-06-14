@@ -64,3 +64,20 @@ public class Foo {
 }
 ```
 前面已经说过使用accessor方法比直接访问属性要慢。所以可以考虑使用package修饰，但问题就是同一个package下的其他class也可以访问到了，所以在对外的API中不要这么做。
+
+### Avoid Using Floating-Point
+根据经验，浮点在android设备上比integer慢2倍。  
+在速度方面，`float`和`double`没有区别。在空间上，double是2倍。与台式机一样，假设空间不是问题，那么应该优先使用double。  
+
+### Know and Use the Libraries
+使用系统library。
+Effective Java, item 47。
+
+### Use Native Methods Carefully
+>Native code is primarily useful when you have an existing native codebase that you want to port to Android, not for "speeding up" parts of your Android app written with the Java language.  
+
+Effective Java, item 54。
+
+### Performance Myths
+
+### Always Measurexw
