@@ -3,35 +3,36 @@
 [Best Practices for Performance](https://developer.android.com/training/best-performance.html)
 
 ### Performance Tips
+--
 写出高效的代码，有两个基本法则
 
 * Don't do work that you don't need to do
 * Don't allocate memory if you can avoid it
 
-### Avoid Creating Unnecessary Objects
+#### Avoid Creating Unnecessary Objects
 避免创建不需要的对象。从而降低垃圾回收的频率，用户体验上的改善非常直观。
 
 * 避免创建大量临时对象，比如String。
 * 当从输入流提取String时，考虑使用subString，而不是copy一份。
 * 多维数组变为一维，当然设计API，对外时是个例外。
 
-### Prefer Static Over Virtual
+#### Prefer Static Over Virtual
 如果你的方法不需要访问对象的实例，那么使用`static`，调用会快15%-20%。同时也可以通过方法签名来直观的体现，调用这个方法不会改变对象的状态。
 
-### Use Static Final For Constants
+#### Use Static Final For Constants
 常量要记得使用`static final`修饰。
 
-### Avoid Internal Getters/Setters
+#### Avoid Internal Getters/Setters
 > Virtual method calls are expensive, much more so than instance field lookups
 
 方法调用的代价比直接使用实例的变量更高，对外的接口设计，仍然应该使用getts/setters，但是在class内部直接使用变量就好。
 
 没有JIT的情况，直接访问属性比用getter方法快3倍，有JIT，则快7倍。
 
-### Use Enhanced For Loop Syntax
+#### Use Enhanced For Loop Syntax
 for-each loop，看Effective Java, item 46。
 
-### Consider Package Instead of Private Access with Private Inner Classes
+#### Consider Package Instead of Private Access with Private Inner Classes
 ```
 public class Foo {
     private class Inner {
@@ -65,11 +66,11 @@ public class Foo {
 ```
 前面已经说过使用accessor方法比直接访问属性要慢。所以可以考虑使用package修饰，但问题就是同一个package下的其他class也可以访问到了，所以在对外的API中不要这么做。
 
-### Avoid Using Floating-Point
+#### Avoid Using Floating-Point
 根据经验，浮点在android设备上比integer慢2倍。  
 在速度方面，`float`和`double`没有区别。在空间上，double是2倍。与台式机一样，假设空间不是问题，那么应该优先使用double。  
 
-### Know and Use the Libraries
+#### Know and Use the Libraries
 使用系统library。
 Effective Java, item 47。
 
@@ -78,6 +79,9 @@ Effective Java, item 47。
 
 Effective Java, item 54。
 
-### Performance Myths
+#### Performance Myths
 
-### Always Measurexw
+#### Always Measurexw
+
+### Improving Layout Performance
+--
