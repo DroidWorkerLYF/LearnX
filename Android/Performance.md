@@ -21,9 +21,46 @@
 ### Use Static Final For Constants
 常量要记得使用`static final`修饰。
 
-```
-static final int intVal = 42;
-static final String strVal = "Hello, world!";
-```
-
 ### Avoid Internal Getters/Setters
+> Virtual method calls are expensive, much more so than instance field lookups
+
+方法调用的代价比直接使用实例的变量更高，对外的接口设计，仍然应该使用getts/setters，但是在class内部直接使用变量就好。
+
+没有JIT的情况，直接访问属性比用getter方法快3倍，有JIT，则快7倍。
+
+### Use Enhanced For Loop Syntax
+for-each loop，看Effective Java, item 46。
+
+### Consider Package Instead of Private Access with Private Inner Classes
+```
+public class Foo {
+    private class Inner {
+        void stuff() {
+            Foo.this.doStuff(Foo.this.mValue);
+        }
+    }
+
+    private int mValue;
+
+    public void run() {
+        Inner in = new Inner();
+        mValue = 27;
+        in.stuff();
+    }
+
+    private void doStuff(int value) {
+        System.out.println("Value is " + value);
+    }
+}
+```
+这种写法虽然能够得到正确的输出，但是`Inner`内部调用了outer class的私有变量和方法，虚拟机认为这种直接访问时非法的，因为`Foo`和`Foo$Inner`是两个不同的Class。但是Java语言允许这么做，所以编译器需要创建相应的方法，来保证可以实现。
+
+```
+/*package*/ static int Foo.access$100(Foo foo) {
+    return foo.mValue;
+}
+/*package*/ static void Foo.access$200(Foo foo, int value) {
+    foo.doStuff(value);
+}
+```
+前面已经说过使用accessor方法比直接访问属性要慢。所以可以考虑使用package修饰，但问题就是同一个package下的其他class也可以访问到了，所以在对外的API中不要这么做。
