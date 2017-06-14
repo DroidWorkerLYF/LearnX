@@ -3,7 +3,6 @@
 [Best Practices for Performance](https://developer.android.com/training/best-performance.html)
 
 ### Performance Tips
---
 写出高效的代码，有两个基本法则
 
 * Don't do work that you don't need to do
@@ -74,7 +73,7 @@ public class Foo {
 使用系统library。
 Effective Java, item 47。
 
-### Use Native Methods Carefully
+#### Use Native Methods Carefully
 >Native code is primarily useful when you have an existing native codebase that you want to port to Android, not for "speeding up" parts of your Android app written with the Java language.  
 
 Effective Java, item 54。
@@ -84,4 +83,27 @@ Effective Java, item 54。
 #### Always Measurexw
 
 ### Improving Layout Performance
---
+
+#### Optimizing Layout Hierarchies
+[Optimizing Layout Hierarchies](https://developer.android.com/training/improving-layouts/optimizing-layout.html#Lint)
+
+##### 使用Hierarchy Viewer
+[Profile Your Layout with Hierarchy Viewer](https://developer.android.com/studio/profile/hierarchy-viewer.html)
+
+* Green means the view renders faster than at least half of the other views
+* Yellow means the view renders faster than the bottom half of the other views
+* Red means the view is among the slowest half of views
+
+##### Performance and View Hierarchies
+[](https://developer.android.com/topic/performance/rendering/optimizing-view-hierarchies.html)
+
+##### 使用Lint
+
+#### Re-using Layouts with <include/>
+
+#### Delayed Loading of Views
+`ViewStub`不支持要inflate的view中含有`merge`。
+
+#### Making ListView Scrolling Smooth
+* 异步
+* View Holder
