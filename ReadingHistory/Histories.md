@@ -17,3 +17,10 @@
 [链接](https://android.jlelse.eu/how-to-speed-up-your-slow-gradle-builds-5d9a9545f91a)  
 [Google I/O 视频](https://www.youtube.com/watch?v=7ll-rkLCtyk)  
 给了一些加快build速度的建议。
+
+### A Lottie to Like
+[链接](https://blog.prototypr.io/a-lottie-to-like-6670f2bed3c5)  
+作者谈了谈目前Lottie的优点和缺点。
+
+### Android — WeakReferences — ‘how-not-to’
+[链接](https://android.jlelse.eu/android-weakreferences-how-not-to-5522bb325935)  
