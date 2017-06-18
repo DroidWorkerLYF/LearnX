@@ -24,3 +24,8 @@
 
 ### Android — WeakReferences — ‘how-not-to’
 [链接](https://android.jlelse.eu/android-weakreferences-how-not-to-5522bb325935)  
+
+
+### 巧用Android多进程，微信，微博等主流App都在用
+[链接](http://cjw-blog.net/2017/02/26/AIDL/?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io)  
+讲跨进程通信使用的。没用过的情况下，可以看一下。
