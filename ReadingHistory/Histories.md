@@ -29,3 +29,15 @@
 ### 巧用Android多进程，微信，微博等主流App都在用
 [链接](http://cjw-blog.net/2017/02/26/AIDL/?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io)  
 讲跨进程通信使用的。没用过的情况下，可以看一下。
+
+### Tutorial: How to Quickly Turn Boring Icons into Original Masterpieces
+[链接](https://uxplanet.org/tutorial-how-to-quickly-turn-boring-icons-into-original-masterpieces-e20226c9bd25)  
+
+*Google’s Material Design Principles*
+
+1. 使用简单的几何图形和亮色
+2. 利用阴影增加深度(光从左上角照射过来)
+3. 使用色调替换阴影
+
+*How You Can Do it Too: Step-by-step Demos*
+主要给出了一系列例子都是给图片增加深度，阴影。
