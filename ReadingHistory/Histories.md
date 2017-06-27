@@ -39,5 +39,9 @@
 2. 利用阴影增加深度(光从左上角照射过来)
 3. 使用色调替换阴影
 
-*How You Can Do it Too: Step-by-step Demos*
+*How You Can Do it Too: Step-by-step Demos*  
 主要给出了一系列例子都是给图片增加深度，阴影。
+
+### Horizontal scrolling in mobile
+[链接](https://uxplanet.org/horizontal-scrolling-in-mobile-643c81901af3)  
+讲了讲横向滑动。
