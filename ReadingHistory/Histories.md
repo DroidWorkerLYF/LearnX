@@ -45,3 +45,12 @@
 ### Horizontal scrolling in mobile
 [链接](https://uxplanet.org/horizontal-scrolling-in-mobile-643c81901af3)  
 讲了讲横向滑动。
+
+### Introduction to Natural palettes
+[链接](https://stories.uplabs.com/introduction-to-natural-palettes-9503bfeee3d5)  
+利用自然的产物提取颜色，比如圣诞节，那么圣诞树，圣诞老人，蛋糕，等等提取出来一些颜色，就可以用于圣诞相关页面的设计。
+
+### Best Three Color Scheme for UI Design
+[链接](https://stories.uplabs.com/best-three-color-scheme-for-music-player-5da996d7f460)  
+
+[Adobe Color CC](https://color.adobe.com/zh/create/color-wheel/)
