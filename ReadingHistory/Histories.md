@@ -72,4 +72,8 @@
 
 ### Why use Facebook’s Android Device Year Class Library?
 [链接](https://blog.mindorks.com/why-use-facebooks-android-device-year-class-library-e5f38a14a3b9)  
-Facebook出了个library帮助区分设备的年代，比如是否在低端机上执行一个动效。
+Facebook出了个library帮助区分设备的年代，比如是否在低端机上执行一个动效。  
+
+### Improving Code Coverage In Android App
+[链接](https://android.jlelse.eu/improving-code-coverage-in-android-app-be8783370c1a)  
+讲了一下利用Jacoco来做代码覆盖率
