@@ -54,3 +54,9 @@
 [链接](https://stories.uplabs.com/best-three-color-scheme-for-music-player-5da996d7f460)  
 
 [Adobe Color CC](https://color.adobe.com/zh/create/color-wheel/)
+
+### Sudo fast can not found command
+[解决方法](http://blog.163.com/zhou_411424/blog/static/19736215620144553754968)  
+设计到`ln`这个命令  
+[How To Create Symbolic Links Using The ln Command](https://www.lifewire.com/create-symbolic-links-ln-command-4059723)  
+[What Are Hard Links And Why Would You Use Them](https://www.lifewire.com/what-are-hard-links-2190041)
