@@ -70,3 +70,6 @@
 3. Attracting Attention
 4. Creating Feeling Of Luxury
 
+### Why use Facebook’s Android Device Year Class Library?
+[链接](https://blog.mindorks.com/why-use-facebooks-android-device-year-class-library-e5f38a14a3b9)  
+Facebook出了个library帮助区分设备的年代，比如是否在低端机上执行一个动效。
