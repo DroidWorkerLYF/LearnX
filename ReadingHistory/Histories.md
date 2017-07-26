@@ -59,4 +59,14 @@
 [解决方法](http://blog.163.com/zhou_411424/blog/static/19736215620144553754968)  
 设计到`ln`这个命令  
 [How To Create Symbolic Links Using The ln Command](https://www.lifewire.com/create-symbolic-links-ln-command-4059723)  
-[What Are Hard Links And Why Would You Use Them](https://www.lifewire.com/what-are-hard-links-2190041)
+[What Are Hard Links And Why Would You Use Them](https://www.lifewire.com/what-are-hard-links-2190041)  
+
+### The power of white space
+[链接](https://uxplanet.org/the-power-of-whitespace-a1a95e45f82b)  
+阐述了留白的4个功能
+
+1. Improving Comprehension
+2. Clarifying Relationships
+3. Attracting Attention
+4. Creating Feeling Of Luxury
+
