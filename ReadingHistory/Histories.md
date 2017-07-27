@@ -81,3 +81,9 @@ Facebook出了个library帮助区分设备的年代，比如是否在低端机�
 ### Android Themes & styles, a real architecture
 [链接](http://blog.octo.com/en/android-themes-styles-a-real-architecture/?utm_source=Android+Weekly&utm_campaign=3e71cfec83-android-weekly-259&utm_medium=email&utm_term=0_4eb677ad19-3e71cfec83-337974369)  
 作者提到了，在各种框架和工具层出不穷的今天，对于主题，我们应该给予同样的重视。
+
+### Android and keeping the data safer
+[链接](https://medium.com/@santiaguilera/android-and-keeping-the-data-safe-b57cf4b018e)
+> Absolute security does not exist. Security is a set of measures, being piled up and combined, trying to slow down the inevitable.
+
+保证存储一些数据的安全。
