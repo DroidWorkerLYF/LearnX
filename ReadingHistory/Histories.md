@@ -87,3 +87,6 @@ Facebook出了个library帮助区分设备的年代，比如是否在低端机�
 > Absolute security does not exist. Security is a set of measures, being piled up and combined, trying to slow down the inevitable.
 
 保证存储一些数据的安全。
+
+### What You Should Know About Internet of Things
+[链接](https://uxplanet.org/what-you-should-know-about-internet-of-things-b27ab8c58368)
