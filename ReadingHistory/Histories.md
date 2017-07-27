@@ -76,4 +76,8 @@ Facebook出了个library帮助区分设备的年代，比如是否在低端机�
 
 ### Improving Code Coverage In Android App
 [链接](https://android.jlelse.eu/improving-code-coverage-in-android-app-be8783370c1a)  
-讲了一下利用Jacoco来做代码覆盖率
+讲了一下利用Jacoco来做代码覆盖率  
+
+### Android Themes & styles, a real architecture
+[链接](http://blog.octo.com/en/android-themes-styles-a-real-architecture/?utm_source=Android+Weekly&utm_campaign=3e71cfec83-android-weekly-259&utm_medium=email&utm_term=0_4eb677ad19-3e71cfec83-337974369)  
+作者提到了，在各种框架和工具层出不穷的今天，对于主题，我们应该给予同样的重视。
