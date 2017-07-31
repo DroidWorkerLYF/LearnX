@@ -90,3 +90,28 @@ Facebook出了个library帮助区分设备的年代，比如是否在低端机�
 
 ### What You Should Know About Internet of Things
 [链接](https://uxplanet.org/what-you-should-know-about-internet-of-things-b27ab8c58368)
+
+### Introduction to Physics-based animations in Android
+[链接](https://medium.com/@richa.khanna/introduction-to-physics-based-animations-in-android-1be27e468835)  
+
+**physics-based animation APIs**
+```
+compile "com.android.support:support-dynamic-animation:25.4.0"
+```
+
+提供了`SpringAnimation` and `FlingAnimation`
+
+### The Most Important Color In UI Design
+[链接](https://uxplanet.org/the-most-important-color-in-ui-design-d4f23aefffdf)
+
+**蓝色**
+
+1. 调查数据显示大部分人选择蓝色，他们喜欢这颜色。
+2. 和大自然有着天然的联系
+3. 很多颜色在UI设计中已经有了对应的含义，而蓝色没有，所以蓝色是个不错的选择
+4. 有科技感
+5. 让人感到安全的颜色
+6. 让人觉得产品更可靠
+7. 对色盲者比较友好，他们能识别出来
+
+但是最终选择正确的颜色还是你的用户认可的那个颜色
