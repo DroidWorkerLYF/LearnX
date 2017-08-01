@@ -115,3 +115,8 @@ compile "com.android.support:support-dynamic-animation:25.4.0"
 7. 对色盲者比较友好，他们能识别出来
 
 但是最终选择正确的颜色还是你的用户认可的那个颜色
+
+### Why every Android developer should use Anko
+[链接](https://www.kotlindevelopment.com/why-should-use-anko/?utm_source=Android+Weekly&utm_campaign=7ece125827-android-weekly-268&utm_medium=email&utm_term=0_4eb677ad19-7ece125827-337974369)
+
+介绍了一些Anko的特点。
