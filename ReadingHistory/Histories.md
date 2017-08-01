@@ -120,3 +120,27 @@ compile "com.android.support:support-dynamic-animation:25.4.0"
 [链接](https://www.kotlindevelopment.com/why-should-use-anko/?utm_source=Android+Weekly&utm_campaign=7ece125827-android-weekly-268&utm_medium=email&utm_term=0_4eb677ad19-7ece125827-337974369)
 
 介绍了一些Anko的特点。
+
+### Mobile UI Design: Basic Types of Screens
+[链接](https://uxplanet.org/mobile-ui-design-basic-types-of-screens-aa1857e31339)  
+
+#### Common screens
+1. Splash screen
+2. Onboarding tutorial screens
+3. Home and menu screens
+4. Log-in and profile screens
+5. Stats screen
+6. Calendar
+
+#### E-commerce screens
+1. Catalog screen
+2. Product card screen
+3. Check out screen
+
+#### Social screens
+1. Feed
+2. Contacts
+
+#### Music screens
+1. Playlist
+2. Player
