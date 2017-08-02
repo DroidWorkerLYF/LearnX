@@ -149,3 +149,7 @@ compile "com.android.support:support-dynamic-animation:25.4.0"
 ### chmod命令
 [wiki百科](https://zh.wikipedia.org/wiki/Chmod)  
 [博客](http://www.cnblogs.com/peida/archive/2012/11/29/2794010.html)实例部分有的写错了，要仔细，前边的讲解和wiki百科互补
+
+### 在Android library中不能使用switch-case语句访问资源ID的原因分析及解决方案
+[链接](https://stackoverflow.com/questions/9092712/switch-case-statement-error-case-expressions-must-be-constant-expression)
+换成if else，因为library中资源文件的id没有final修饰。
