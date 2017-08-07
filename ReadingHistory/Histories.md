@@ -153,3 +153,38 @@ compile "com.android.support:support-dynamic-animation:25.4.0"
 ### 在Android library中不能使用switch-case语句访问资源ID的原因分析及解决方案
 [链接](https://stackoverflow.com/questions/9092712/switch-case-statement-error-case-expressions-must-be-constant-expression)
 换成if else，因为library中资源文件的id没有final修饰。
+
+### When To Use a Hamburger Menu
+[链接](https://uxplanet.org/when-to-use-a-hamburger-menu-199d62f764aa)
+
+汉堡包菜单呢，虽然隐藏了导航，但是正因如此，把一些重要性不高的项目放进去，也是合理的，文中举了uber的例子。把不常用，maybe 20%常用的导航隐藏。
+
+### Red, White, and Blue 
+[链接](https://medium.springboard.com/a-designers-guide-to-selecting-colors-for-your-product-9944756838d4)  
+Eight rules about color palettes that everyone (including non-designers) should know  
+
+#### 1. Limit the Number of Colors
+1. maximum of 3 primary colors
+2. use color wheel to help
+
+#### 2. Be Inspired by Nature
+#### 3. Try to Follow 60–30–10 Rule
+#### 4. Design in Grayscale First
+#### 5. Avoid Using the Color Black
+#### 6. Set Importance Using Color Contrast
+#### 7. Use Color to Impact Users’ Emotions
+* Red (Passionate, Powerful, Dangerous, Important)
+* Orange (Playful, Energetic, Attractive, Cheap)
+* Yellow (Cheerful, Friendly, Stimulative, Attention-seeking)
+* Green (Natural, Safe, Fresh)
+* Blue (Calming, Responsible, Trustworthy, Reliable)
+* Purple (Luxurious, Mysterious, Romantic, Spirituality)
+* Pink (Feminine, Innocence, Youth)
+* Black (Powerful, Sophisticated, Mysterious, Edgy)
+* White (Purity, Health, Cleanliness, Innocent)
+* Gray (Neutral, Formal, Sophistication, Sterility)
+
+#### 8. Make Your Design Accessible
+* Avoid Using Color Alone As an Indicator
+* Avoid Low Contrast For Text
+ 
