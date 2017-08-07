@@ -187,4 +187,9 @@ Eight rules about color palettes that everyone (including non-designers) should 
 #### 8. Make Your Design Accessible
 * Avoid Using Color Alone As an Indicator
 * Avoid Low Contrast For Text
+
+### How Google Designers Adapt Material
+[链接](https://medium.com/google-design/how-google-designers-adapt-material-e2818ad09d7d)
+
+> Guides not rules
  
