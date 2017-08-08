@@ -199,3 +199,27 @@ Eight rules about color palettes that everyone (including non-designers) should 
 
 ### Case Study: Echo. Designing User Experience and User Interface.
 [链接](http://tubikstudio.com/case-study-echo-designing-uxui/)
+
+### Small Elements, Big Impact: Types and Functions of UI Icons.
+[链接](https://uxplanet.org/small-elements-big-impact-types-and-functions-of-ui-icons-87c6a74d366e)  
+
+Types based on functions
+
+1. 解释性的icon
+2. 交互性的icon
+3. 装饰性的icon
+4. App icon
+5. Favicon
+
+Types based on visual performance
+
+1. Glyph icons
+2. Flat and semi-flat icons
+3. Skeuomorphic icons(拟物)
+4. SVG icons
+
+Types based on applied image metaphor
+
+1. Resemblance icons
+2. Reference icons
+3. Arbitrary icons
