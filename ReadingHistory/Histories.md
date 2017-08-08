@@ -193,3 +193,6 @@ Eight rules about color palettes that everyone (including non-designers) should 
 
 > Guides not rules
  
+### Git的Patch功能
+[链接](http://www.cnblogs.com/y041039/articles/2411600.html)
+才使用到这个功能，记录一下。
