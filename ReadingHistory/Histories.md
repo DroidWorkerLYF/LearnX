@@ -223,3 +223,16 @@ Types based on applied image metaphor
 1. Resemblance icons
 2. Reference icons
 3. Arbitrary icons
+
+### How Human Memory Works: Tips for UX Designers
+[链接](https://uxplanet.org/how-human-memory-works-tips-for-ux-designers-12b14071bdf9)
+
+Tips for memory-friendly UX
+
+1. Don’t make users memorize many items at once.
+2. Don’t present too many elements for the choice together.
+3. Save memory effort with recognizable patterns and symbols
+4. Apply consistent markers in navigation
+5. Don’t hide the core elements of navigation
+6. Stimulate different types of memory
+7. Remember about emotions
