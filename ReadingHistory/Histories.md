@@ -236,3 +236,10 @@ Tips for memory-friendly UX
 5. Don’t hide the core elements of navigation
 6. Stimulate different types of memory
 7. Remember about emotions
+
+### How we designed Foursquare Swarm 5.0
+[链接](https://medium.com/foursquare-direct/how-we-designed-foursquare-swarm-5-0-d774b3164f3f)  
+Two key design tips：
+
+1. Get engineers involved at the beginning
+2. Share early, share often, and sort through the clutter
