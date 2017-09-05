@@ -68,7 +68,7 @@ private ViewGroup mContentParent;
 
 显然这里就是判断当没有Decor view的时候，我们需要先install一个。
 
-## installDecor
+### installDecor
 ```
 private void installDecor(){
 	if (mDecor == null) {
@@ -83,7 +83,7 @@ private void installDecor(){
 ```
 首先会创建`Decor`，实际上就是`new DecorView(getContext(), -1)`。接下来，我们就要创建上文提到的`mContentParent`了。
 
-### generateLayout(DecorView decor)
+#### generateLayout(DecorView decor)
 ```
 protected ViewGroup generateLayout(DecorView decor) {
 	TypedArray a = getWindowStyle();
@@ -110,7 +110,6 @@ protected ViewGroup generateLayout(DecorView decor) {
     mContentRoot = (ViewGroup) in;
 
 	// ID_ANDROID_CONTENT:The ID that the main layout in the XML layout file should have.
-	// 实际我们的布局就是被添加到了content部分，所以是setContentView。
    ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);
    if (contentParent == null) {
        throw new RuntimeException("Window couldn't find content container view");
@@ -167,9 +166,10 @@ protected ViewGroup generateLayout(DecorView decor) {
 ```
 到了这里就可以知道mContentParent其实就是我们熟悉的那个android布局中的content。
 
-### drawableChanged()
+#### drawableChanged()
 前面返回contentParent之前，最终是执行了`PhoneWindow`中的`drawableChanged()`。
 
+### PhoneWindow#setContentView
 ```
 public void setContentView(int layoutResID) {
        // install decor
@@ -189,4 +189,31 @@ public void setContentView(int layoutResID) {
         mContentParentExplicitlySet = true;
     }
 ```
-再回到前面的`setContentView`方法，decor install之后，
+再回到前面的`setContentView`方法，decor install之后，判断如果没有设定转场动画，则直接将我们传入的布局id，inflate到`mContentParent`，这也是为什么叫做`setCotentView`。
+
+### Activity#initWindowDecorActionBar
+前面已经把layout加到了布局中，接下来注释也说的比较清楚了。
+
+```
+	/**
+     * Creates a new ActionBar, locates the inflated ActionBarView,
+     * initializes the ActionBar with the view, and sets mActionBar.
+     */
+    private void initWindowDecorActionBar() {
+        Window window = getWindow();
+
+        // Initializing the window decor can change window feature flags.
+        // Make sure that we have the correct set before performing the test below.
+        window.getDecorView();
+
+        if (isChild() || !window.hasFeature(Window.FEATURE_ACTION_BAR) || mActionBar != null) {
+            return;
+        }
+
+        mActionBar = new WindowDecorActionBar(this);
+        mActionBar.setDefaultDisplayHomeAsUpEnabled(mEnableDefaultActionBarUp);
+
+        mWindow.setDefaultIcon(mActivityInfo.getIconResource());
+        mWindow.setDefaultLogo(mActivityInfo.getLogoResource());
+    }
+```
