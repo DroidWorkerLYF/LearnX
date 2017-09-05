@@ -19,7 +19,7 @@ public void setContentView(View view)
 public void setContentView(View view, ViewGroup.LayoutParams params)
 ```
 
-已第一个为例
+以第一个为例
 
 ```
 public void setContentView(@LayoutRes int layoutResID) {
@@ -100,5 +100,93 @@ protected ViewGroup generateLayout(DecorView decor) {
         layoutResource = R.layout.screen_swipe_dismiss;
     } else if ......
     // 一堆if-else来给layoutResources赋值。
+    // 这里会设置一个mChanging变量为true，在Decor中的方法drawableChanged()中会依赖这个值
+    mDecor.startChanging();
+    
+    // 最终inflate确定的layout
+    View in = mLayoutInflater.inflate(layoutResource, null);
+    decor.addView(in, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+    // view in被添加到decor中并且赋值给mContentRoot
+    mContentRoot = (ViewGroup) in;
+
+	// ID_ANDROID_CONTENT:The ID that the main layout in the XML layout file should have.
+	// 实际我们的布局就是被添加到了content部分，所以是setContentView。
+   ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);
+   if (contentParent == null) {
+       throw new RuntimeException("Window couldn't find content container view");
+   }
+
+   if ((features & (1 << FEATURE_INDETERMINATE_PROGRESS)) != 0) {
+       ProgressBar progress = getCircularProgressBar(false);
+       if (progress != null) {
+           progress.setIndeterminate(true);
+       }
+   }
+
+   if ((features & (1 << FEATURE_SWIPE_TO_DISMISS)) != 0) {
+       registerSwipeCallbacks();
+   }
+
+   // Remaining setup -- of background and title -- that only applies to top-level windows.
+   // getContainer()定义在Window中，如果是top-level则返回null，显然我们这里就是top-level
+   if (getContainer() == null) {
+       final Drawable background;
+       if (mBackgroundResource != 0) {
+           background = getContext().getDrawable(mBackgroundResource);
+       } else {
+           background = mBackgroundDrawable;
+       }
+       mDecor.setWindowBackground(background);
+
+       final Drawable frame;
+       if (mFrameResource != 0) {
+           frame = getContext().getDrawable(mFrameResource);
+       } else {
+           frame = null;
+       }
+       // 这里其实是设置foreground，因为前面调用了Decor的startChanging()，所以不会出发drawableChanged()
+       mDecor.setWindowFrame(frame);
+
+       mDecor.setElevation(mElevation);
+       mDecor.setClipToOutline(mClipToOutline);
+
+       if (mTitle != null) {
+           setTitle(mTitle);
+       }
+
+       if (mTitleColor == 0) {
+           mTitleColor = mTextColor;
+       }
+       setTitleColor(mTitleColor);
+   }
+	// 将Decor中的mChanging变量置为false，并且出发drawableChanged();
+   mDecor.finishChanging();
+
+   return contentParent;
 }
 ```
+到了这里就可以知道mContentParent其实就是我们熟悉的那个android布局中的content。
+
+### drawableChanged()
+前面返回contentParent之前，最终是执行了`PhoneWindow`中的`drawableChanged()`。
+
+```
+public void setContentView(int layoutResID) {
+       // install decor
+
+        if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
+            final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,
+                    getContext());
+            transitionTo(newScene);
+        } else {
+            mLayoutInflater.inflate(layoutResID, mContentParent);
+        }
+        mContentParent.requestApplyInsets();
+        final Callback cb = getCallback();
+        if (cb != null && !isDestroyed()) {
+            cb.onContentChanged();
+        }
+        mContentParentExplicitlySet = true;
+    }
+```
+再回到前面的`setContentView`方法，decor install之后，
