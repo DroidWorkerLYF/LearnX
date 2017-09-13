@@ -9,7 +9,7 @@ protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 }
 ```
-一段很常见的代码。让我们跟进去一点点看看。
+一段很常见的代码。让我们跟进去看一看。
 
 `setContentView`有三个重载的方法。
 
@@ -26,9 +26,21 @@ public void setContentView(@LayoutRes int layoutResID) {
         getWindow().setContentView(layoutResID);
         initWindowDecorActionBar();
     }
+    
+   /**
+     * Retrieve the current {@link android.view.Window} for the activity.
+     * This can be used to directly access parts of the Window API that
+     * are not available through Activity/Screen.
+     *
+     * @return Window The current window, or null if the activity is not
+     *         visual.
+     */
+    public Window getWindow() {
+        return mWindow;
+}
 ```
 
-发现其实调用的是`Window`中的`setContentView(int layoutResID)`方法。我们已经知道`Window`的实现类是`PhoneWindow`，那么继续深入。
+发现其实调用的是`Window`中的`setContentView(int layoutResID)`方法。查看`Activity`中代码可知，在`attach`方法中`mWindow = new PhoneWindow(this)`，那么继续看`PhoneWindow`的`setContentView`方法。
 
 ```
 public void setContentView(int layoutResID) {
@@ -66,10 +78,13 @@ private ViewGroup mContentParent;
 
 根据源码的注释，我们得知，我们的内容就是添加到这个View中，他可能是`Decor`或者`Decor`的child。
 
-显然这里就是判断当没有Decor view的时候，我们需要先install一个。
+显然这里就是先install一个Decor。
 
 ### installDecor
 ```
+// This is the top-level view of the window, containing the window decor.
+private DecorView mDecor;
+
 private void installDecor(){
 	if (mDecor == null) {
 		mDecor = generateDecor();
@@ -87,7 +102,8 @@ private void installDecor(){
 ```
 protected ViewGroup generateLayout(DecorView decor) {
 	TypedArray a = getWindowStyle();
-	// 根据TypedArray中的值setFlags，requestFeature.
+	// 根据TypedArray中的值setFlags，requestFeature.这也是我们自己在代码中requestFeature时，为什么要放在
+	// setContentView前面。
 	// The rest are only done if this window is not embedded; otherwise,
     // the values are inherited from our container.
     if (getContainer() == null) {
@@ -164,7 +180,7 @@ protected ViewGroup generateLayout(DecorView decor) {
    return contentParent;
 }
 ```
-到了这里就可以知道mContentParent其实就是我们熟悉的那个android布局中的content。
+到了这里就可以知道mContentParent其实就是我们熟悉的那个android布局中的android:id/content。当没有title bar时，那么其实就呼应了前文注释中说的`mContentParent`是Decor本身，有title bar时则是child。
 
 #### drawableChanged()
 前面返回contentParent之前，最终是执行了`PhoneWindow`中的`drawableChanged()`。
@@ -217,3 +233,11 @@ public void setContentView(int layoutResID) {
         mWindow.setDefaultLogo(mActivityInfo.getLogoResource());
     }
 ```
+
+## 总结
+那么问题来了，我们只是分析了自己的布局是如何被添加到Decor中的，那么Decor又是如何被添加到Window中的呢，有了整个的布局，又是如何展现出来的。
+
+##### 参考文章
+[【Android View源码分析（一）】setContentView加载视图机制深度分析](http://blog.csdn.net/qq_23191031/article/details/77172090?locationNum=4&fps=1)
+
+[Android View源码解读：浅谈DecorView与ViewRootImpl](http://www.jianshu.com/p/687010ccad66)
