@@ -7,7 +7,7 @@
 `Activity`负责与用户的交互，所以需要负责创建`Window`来展现我们`setContentView`添加进来的内容，看到这里就很明确了，我们想要解答之前的疑问，就需要了解一下`Activity`这个非常重要的组件。
 
 ## startActivity
-从哪里下手呢，既然`Activity`要呈现出来，那必然要先由我们启动一个，所以就从`startActivity`入手。
+从哪里下手呢，既然`Activity`要呈现出来，那我们肯定得启动一个，所以就从`startActivity`入手。
 
 
 ```
@@ -22,7 +22,7 @@
         }
     }
 ```
-这是`Activity`中的实现，直接Override父类的方法，`startActivity`会启动一个新的`Activity`，相比`Context.startActivity`方法，这个方法不需要`Intent#FLAG_ACTIVITY_NEW_TASK`，我们肯定都不陌生在非`Activity`中启动`Activity`时，都需要这个参数，因为没有task可以存放新的`Activity`，而在`Activity`中，在没有特别指定的情况下，新的`Activity`会被添加到调用者所在的task。
+这是`Activity`中的实现，`startActivity`会启动一个新的`Activity`，相比`Context.startActivity`方法，这个方法不需要`Intent#FLAG_ACTIVITY_NEW_TASK`，我们肯定都不陌生在非`Activity`中启动`Activity`时，都需要这个参数，因为没有task可以存放新的`Activity`，而在`Activity`中，在没有特别指定的情况下，新的`Activity`会被添加到调用者所在的task。
 
 ```
 public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
@@ -77,7 +77,7 @@ public void startActivityForResult(Intent intent, int requestCode, @Nullable Bun
 public class Instrumentation {
 }
 ```
-先来看看什么是`Instrumentation`。
+先来看看`Instrumentation`。根据文档所述，我们能了解到这个类会在应用代码执行前实例化，可以监控系统与应用的交互。`Instrumentation`的实现注册在AndroidManifest的<instrumentation>标签。所以不难看出为什么`Instrumentation`会用来帮助我们做单元测试了。
 
 ```
 public ActivityResult execStartActivity(
@@ -118,4 +118,62 @@ public ActivityResult execStartActivity(
         return null;
     }
 ```
+
+回到具体代码，首先遍历mActivityMonitors。  
+实际启动`Activity`是在`ActivityManagerNative.getDefault().startActivity`这个地方。
+
+```
+	/**
+     * Retrieve the system's default/global activity manager.
+     */
+    static public IActivityManager getDefault() {
+        return gDefault.get();
+    }
+    
+    private static final Singleton<IActivityManager> gDefault = new Singleton<IActivityManager>() {
+        protected IActivityManager create() {
+            IBinder b = ServiceManager.getService("activity");
+            if (false) {
+                Log.v("ActivityManager", "default service binder = " + b);
+            }
+            IActivityManager am = asInterface(b);
+            if (false) {
+                Log.v("ActivityManager", "default service = " + am);
+            }
+            return am;
+        }
+    };
+```
+可以看出这里实际创建了一个`IActivityManager`类型的单例，`IActivityManager`是个Binder，用于和activity manager service通信。
+
+```
+/**
+ * System private API for talking with the activity manager service.  This
+ * provides calls from the application back to the activity manager.
+ *
+ * {@hide}
+ */
+public interface IActivityManager extends IInterface {
+}
+```
+
+```
+	/**
+     * Cast a Binder object into an activity manager interface, generating
+     * a proxy if needed.
+     */
+    static public IActivityManager asInterface(IBinder obj) {
+        if (obj == null) {
+            return null;
+        }
+        IActivityManager in =
+            (IActivityManager)obj.queryLocalInterface(descriptor);
+        if (in != null) {
+            return in;
+        }
+
+        return new ActivityManagerProxy(obj);
+    }
+```
+接下来在`asInterface`方法中
 
