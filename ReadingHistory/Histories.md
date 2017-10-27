@@ -243,3 +243,8 @@ Two key design tips：
 
 1. Get engineers involved at the beginning
 2. Share early, share often, and sort through the clutter
+
+### Building Offline-First App using MVVM, RxJava, Room and Priority Job Queue
+[链接](https://proandroiddev.com/offline-apps-its-easier-than-you-think-9ff97701a73f)  
+> Your data should be stored locally first and synced remotely second.
+
