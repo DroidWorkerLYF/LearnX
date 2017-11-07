@@ -248,3 +248,8 @@ Two key design tips：
 [链接](https://proandroiddev.com/offline-apps-its-easier-than-you-think-9ff97701a73f)  
 > Your data should be stored locally first and synced remotely second.
 
+### Playing with elevation in Android
+[链接](https://blog.usejournal.com/playing-with-elevation-in-android-91af4f3be596)  
+Android 的evelvation一个来自屏幕顶部斜向下方的光线，一个是屏幕正上方照向屏幕的光线  
+![](https://cdn-images-1.medium.com/max/2000/1*-vXg2b2k3Cs7-qjlrlxG4A.png)  
+通过outline其实是可以改变默认行为的。
