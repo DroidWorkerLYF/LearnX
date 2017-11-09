@@ -253,3 +253,7 @@ Two key design tips：
 Android 的evelvation一个来自屏幕顶部斜向下方的光线，一个是屏幕正上方照向屏幕的光线  
 ![](https://cdn-images-1.medium.com/max/2000/1*-vXg2b2k3Cs7-qjlrlxG4A.png)  
 通过outline其实是可以改变默认行为的。
+
+### Java: When to Use (n >> 8) & 0xff and When to Use (byte)(n >>> 8)  
+[链接](https://android.jlelse.eu/java-when-to-use-n-8-0xff-and-when-to-use-byte-n-8-2efd82ae7dd7)
+
