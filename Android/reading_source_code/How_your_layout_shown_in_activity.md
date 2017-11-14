@@ -235,7 +235,10 @@ public void setContentView(int layoutResID) {
 ```
 
 ## 总结
-那么问题来了，我们只是分析了自己的布局是如何被添加到Decor中的，那么Decor又是如何被添加到`Window`中的呢，`Window`又是如何呈现出来的，Activity又是怎么来的呢，后面一点点的分析。
+那么问题来了，我们只是分析了自己的布局是如何被添加到Decor中的，那么Decor又是如何被添加到`Window`中的呢，`Window`又是如何呈现出来的，Activity又是怎么来的呢，后面一点点的分析。  
+
+附一张参考文章里的截图，很直观  
+![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Android/reading_source_code/res/windows.png?raw=true)
 
 ##### 参考文章
 [【Android View源码分析（一）】setContentView加载视图机制深度分析](http://blog.csdn.net/qq_23191031/article/details/77172090?locationNum=4&fps=1)
