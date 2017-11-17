@@ -257,3 +257,5 @@ Android 的evelvation一个来自屏幕顶部斜向下方的光线，一个是�
 ### Java: When to Use (n >> 8) & 0xff and When to Use (byte)(n >>> 8)  
 [链接](https://android.jlelse.eu/java-when-to-use-n-8-0xff-and-when-to-use-byte-n-8-2efd82ae7dd7)
 
+### What app to build next
+[链接](https://medium.com/user-camp/what-app-to-build-next-23ce2764ed6e)
