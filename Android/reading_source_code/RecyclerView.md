@@ -1,4 +1,10 @@
 # RecyclerView
+
+![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Android/reading_source_code/res/recyclerview_extends.png?raw=true)
+
+> A flexible view for providing a limited window into a large data set.
+一个在有限窗口内展示大量数据集合的灵活的视图
+
 既然是个`View`，那就免不了Measure，Layout，Draw。
 
 ## onMeasure
@@ -42,7 +48,7 @@
 在RV的内部类`RecyclerViewDataObserver`中
 
 ```
-void triggerUpdateProcessor() {
+		void triggerUpdateProcessor() {
             if (mPostUpdatesOnAnimation && mHasFixedSize && mIsAttached) {
                 ViewCompat.postOnAnimation(RecyclerView.this, mUpdateChildViewsRunnable);
             } else {
@@ -58,8 +64,54 @@ void triggerUpdateProcessor() {
 `State`中包含了RV的很多有用信息，可以在各个组件中传递`State`对象，根据需要获取相应的信息。而且可以通过resource id作为key，存储任意数据。
 
 再往下如果`mLayout`为`null`，那么会调用默认的measure方法否则调用`mLayout.onMeasure`，`mLayout`是一个`LayoutManager`对象。
+
 ### LayoutManager
 `LayoutManager`负责测量和定位item views，并且决定何时回收不再对用户可见的item views。使用不同的`LayoutManager`，RV就可以实现不用的展示效果。源码中也默认为我们提供了一些实现。
+
+#### LinearLayoutManager
+我们来看一下`LinearLayoutManager`是如何实现`onMeasure`的。  
+```
+		  public void onMeasure(Recycler recycler, State state, int widthSpec, int heightSpec) {
+            mRecyclerView.defaultOnMeasure(widthSpec, heightSpec);
+        }
+```
+这里还是RV的默认实现。
+
+```
+	private void defaultOnMeasure(int widthSpec, int heightSpec) {
+        final int widthMode = MeasureSpec.getMode(widthSpec);
+        final int heightMode = MeasureSpec.getMode(heightSpec);
+        final int widthSize = MeasureSpec.getSize(widthSpec);
+        final int heightSize = MeasureSpec.getSize(heightSpec);
+
+        int width = 0;
+        int height = 0;
+
+        switch (widthMode) {
+            case MeasureSpec.EXACTLY:
+            case MeasureSpec.AT_MOST:
+                width = widthSize;
+                break;
+            case MeasureSpec.UNSPECIFIED:
+            default:
+                width = ViewCompat.getMinimumWidth(this);
+                break;
+        }
+
+        switch (heightMode) {
+            case MeasureSpec.EXACTLY:
+            case MeasureSpec.AT_MOST:
+                height = heightSize;
+                break;
+            case MeasureSpec.UNSPECIFIED:
+            default:
+                height = ViewCompat.getMinimumHeight(this);
+                break;
+        }
+
+        setMeasuredDimension(width, height);
+    }
+```
 
 ## onLayout
 ```
