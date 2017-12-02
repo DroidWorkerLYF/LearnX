@@ -259,3 +259,21 @@ Android 的evelvation一个来自屏幕顶部斜向下方的光线，一个是�
 
 ### What app to build next
 [链接](https://medium.com/user-camp/what-app-to-build-next-23ce2764ed6e)
+
+### "Could not get unknown property 'assembleRelease' for project ':app' of type org.gradle.api.Project."
+[链接](https://stackoverflow.com/questions/39590549/after-update-to-android-studio-2-2-gradle-plugin-2-2-0-could-not-get-unknown)  
+[链接](https://stackoverflow.com/questions/17438219/better-to-use-task-dependencies-or-task-dolast-in-gradle)  
+
+很老的问题了，总的来说就是在gradle更新后，原来的
+```
+	assembleRelease.doLast {
+		do something
+	}
+```
+这样的写法需要改成
+```
+	task xxx << {
+		do something
+		dependsOn `assembleRelease`
+	}
+```
