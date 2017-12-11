@@ -3,13 +3,14 @@
 ![](https://github.com/DroidWorkerLYF/LearnX/blob/master/Android/reading_source_code/res/recyclerview_extends.png?raw=true)
 
 > A flexible view for providing a limited window into a large data set.
+
 一个在有限窗口内展示大量数据集合的灵活的视图
 
 既然是个`View`，那就免不了Measure，Layout，Draw。
 
 ## onMeasure
 ```
-	protected void onMeasure(int widthSpec, int heightSpec) {
+protected void onMeasure(int widthSpec, int heightSpec) {
         if (mAdapterUpdateDuringMeasure) {
             eatRequestLayout();
             processAdapterUpdatesAndSetAnimationFlags();
@@ -48,14 +49,14 @@
 在RV的内部类`RecyclerViewDataObserver`中
 
 ```
-		void triggerUpdateProcessor() {
-            if (mPostUpdatesOnAnimation && mHasFixedSize && mIsAttached) {
-                ViewCompat.postOnAnimation(RecyclerView.this, mUpdateChildViewsRunnable);
-            } else {
-                mAdapterUpdateDuringMeasure = true;
-                requestLayout();
-            }
-        }
+void triggerUpdateProcessor() {
+     if (mPostUpdatesOnAnimation && mHasFixedSize && mIsAttached) {
+         ViewCompat.postOnAnimation(RecyclerView.this, mUpdateChildViewsRunnable);
+     } else {
+         mAdapterUpdateDuringMeasure = true;
+         requestLayout();
+     }
+}
 ```
 我们调用的各种onItemInsert/onItemRemove最终会触发此方法，这里会将`mAdapterUpdateDuringMeasure`设置为true。  
 接下来是从adapter中获取item的count并赋值给mState的mItemCount。mState是`State`(RecyclerView的静态内部类)的实例。  
@@ -69,11 +70,12 @@
 `LayoutManager`负责测量和定位item views，并且决定何时回收不再对用户可见的item views。使用不同的`LayoutManager`，RV就可以实现不用的展示效果。源码中也默认为我们提供了一些实现。
 
 #### LinearLayoutManager
-我们来看一下`LinearLayoutManager`是如何实现`onMeasure`的。  
+我们来看一下`LinearLayoutManager`是如何实现`onMeasure`的。 
+ 
 ```
-		  public void onMeasure(Recycler recycler, State state, int widthSpec, int heightSpec) {
-            mRecyclerView.defaultOnMeasure(widthSpec, heightSpec);
-        }
+public void onMeasure(Recycler recycler, State state, int widthSpec, int heightSpec) {
+       mRecyclerView.defaultOnMeasure(widthSpec, heightSpec);
+}
 ```
 这里还是RV的默认实现。
 
@@ -136,6 +138,78 @@
 
 这个方法会指出哪些item在layout前/后存在并推断出每个item属于上面五种状态的哪一种，然后设置动画。
 
+`dispatchLayout`是个比较长的方法，分为几步。
+
+```
+		 if (mAdapter == null) {
+            Log.e(TAG, "No adapter attached; skipping layout");
+            return;
+        }
+        if (mLayout == null) {
+            Log.e(TAG, "No layout manager attached; skipping layout");
+            return;
+        }
+        mState.mDisappearingViewsInLayoutPass.clear();
+        eatRequestLayout();
+        onEnterLayoutOrScroll();
+
+        processAdapterUpdatesAndSetAnimationFlags();
+
+        mState.mOldChangedHolders = mState.mRunSimpleAnimations && mItemsChanged
+                && supportsChangeAnimations() ? new ArrayMap<Long, ViewHolder>() : null;
+        mItemsAddedOrRemoved = mItemsChanged = false;
+        ArrayMap<View, Rect> appearingViewInitialBounds = null;
+        mState.mInPreLayout = mState.mRunPredictiveAnimations;
+        mState.mItemCount = mAdapter.getItemCount();
+        findMinMaxChildLayoutPositions(mMinMaxLayoutPositions);
+```
+首先会吃掉request layout的请求，这里有个`mEatRequestLayout`和`mLayoutFrozen`。
+
+```
+	void eatRequestLayout() {
+        if (!mEatRequestLayout) {
+            mEatRequestLayout = true;
+            if (!mLayoutFrozen) {
+                mLayoutRequestEaten = false;
+            }
+        }
+    }
+    
+    @Override
+    public void requestLayout() {
+        if (!mEatRequestLayout && !mLayoutFrozen) {
+            super.requestLayout();
+        } else {
+            mLayoutRequestEaten = true;
+        }
+    }
+```
+`mEatRequestLayout`这个变量为true时就会屏蔽掉任何requestLayout的调用，而`mLayoutFrozen`则可以控制layout和scroll。
+
+```
+   public void setLayoutFrozen(boolean frozen) {
+        if (frozen != mLayoutFrozen) {
+            assertNotInLayoutOrScroll("Do not setLayoutFrozen in layout or scroll");
+            if (!frozen) {
+                mLayoutFrozen = frozen;
+                if (mLayoutRequestEaten && mLayout != null && mAdapter != null) {
+                    requestLayout();
+                }
+                mLayoutRequestEaten = false;
+            } else {
+                final long now = SystemClock.uptimeMillis();
+                MotionEvent cancelEvent = MotionEvent.obtain(now, now,
+                        MotionEvent.ACTION_CANCEL, 0.0f, 0.0f, 0);
+                onTouchEvent(cancelEvent);
+                mLayoutFrozen = frozen;
+                mIgnoreMotionEventTillDown = true;
+                stopScroll();
+            }
+        }
+    }
+```
+当`mLayoutFrozen`为true时，request layout也会被屏蔽；所有RV的child不会更新，`smoothScrollBy`，`scrollBy`，`scrollToPosition`，`smoothScrollToPosition`这些滚动方法也不会响应；touch事件不会响应；源码中默认在`setAdapter`和`swapAdapter`时会`setLayoutFrozen(false)`，那么具体是如何stop scroll？
+
 ## draw
 
 ### onDraw
@@ -193,3 +267,5 @@
 
 正如前面提到的，这里一上来就调用了`ItemDecoration`的`onDrawOver`方法。接下来就是绘制Edge effect(旋转移动canvas
 然后绘制)。在接下来，则是处理一下看是否需要invalidate。
+
+
