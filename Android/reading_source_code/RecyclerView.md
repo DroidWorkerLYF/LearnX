@@ -210,6 +210,36 @@ public void onMeasure(Recycler recycler, State state, int widthSpec, int heightS
 ```
 当`mLayoutFrozen`为true时，request layout也会被屏蔽；所有RV的child不会更新，`smoothScrollBy`，`scrollBy`，`scrollToPosition`，`smoothScrollToPosition`这些滚动方法也不会响应；touch事件不会响应；源码中默认在`setAdapter`和`swapAdapter`时会`setLayoutFrozen(false)`，那么具体是如何stop scroll？
 
+#### stop scroll
+```
+	public void stopScroll() {
+        setScrollState(SCROLL_STATE_IDLE);
+        stopScrollersInternal();
+    }
+```
+这里会先将`mScrollState`设置为`SCROLL_STATE_IDLE`，在`setScrollState`方法中，只要状态不是`SCROLL_STATE_SETTLING`，就会调用`stopScrollersInternal`。
+
+```
+	private void stopScrollersInternal() {
+        mViewFlinger.stop();
+        if (mLayout != null) {
+            mLayout.stopSmoothScroller();
+        }
+    }
+```
+注释中说这个方法和`stopScroll`的区别就是它不设置状态。`mViewFlinger`是个`ViewFlinger`(RV的内部类)对象，实现了`Runnable`接口，内部封装了Scroller，所有滚动相关的操作都是交由它处理的，不断post自身。然后再调用`LayoutManager`的`stopSmoothScroller`。
+
+```
+void stopSmoothScroller() {
+     if (mSmoothScroller != null) {
+         mSmoothScroller.stop();
+     }
+}
+```
+`SmoothScroller`也是RV的一个内部类。负责平滑滚动的基类，保存目标视图的位置，提供触发滚动的方法。最终还是由`ViewFlinger`去执行。
+
+再回到`dispatchLayout`方法。`onEnterLayoutOrScroll`会使得mLayoutOrScrollCounter ++，这个变量大于0，`isComputingLayout`就会返回true，也就意味着此时你不能更新adapter，你应该用`Handler`或者其他类似的机制来update。
+
 ## draw
 
 ### onDraw
