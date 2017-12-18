@@ -6,7 +6,7 @@
 
 一个在有限窗口内展示大量数据集合的灵活的视图
 
-既然是个`View`，那就免不了Measure，Layout，Draw。
+既然是个`View`，那就免不了Measure，Layout，Draw。在看的过程中，其实对于preLayout，runPredictiveAnimation什么的都是一脸懵逼。看了一些文章，才有所了解。RV有两次layout过程，一次preLayout，一次postLayout。
 
 ## onMeasure
 ```
@@ -299,3 +299,9 @@ void stopSmoothScroller() {
 然后绘制)。在接下来，则是处理一下看是否需要invalidate。
 
 
+### 参考
+[掌握RecyclerView动画不得不看的文章](http://www.jianshu.com/p/3be9a519fe79)  
+[RecyclerView Animations Part 1 - How Animations Work](http://www.birbit.com/recyclerview-animations-part-1-how-animations-work/)  
+[](https://sanjay-f.github.io/2015/12/23/源码探索系列10---替代Listview的RecycleView/)  
+[](http://www.jianshu.com/p/115c7bba2d1e)  
+[](http://www.jianshu.com/p/9ddfdffee5d3)
