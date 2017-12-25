@@ -4,15 +4,16 @@
 
 > A flexible view for providing a limited window into a large data set.
 
-一个在有限窗口内展示大量数据集合的灵活的视图
+一个在有限窗口内展示大量数据集合的灵活的视图。
 
-既然是个`View`，那就免不了Measure，Layout，Draw。在看的过程中，其实对于preLayout，runPredictiveAnimation什么的都是一脸懵逼。看了一些文章，才有所了解。RV有两次layout过程，一次preLayout，一次postLayout。
+在看的过程中，其实对于preLayout，runPredictiveAnimation什么的都是一脸懵逼。看了一些文章，才有所了解。这里要注意view和item的区别。对于一个`ViewGroup`一个view add了，那就可以执行一个fade in动画，表示新增，但是对于一个list，一个item可能只是从不可见到可见了，虽然view是新add进来的，但是还是执行fade in动画就会很奇怪，也就说item和view是有区别的。那么为了对view实施正确的动画，RV的两次layout过程，一次preLayout，一次postLayout，避免LayoutManager过于复杂的同时，还可以处理好所有的change。在preLayout时，是执行动画前的状态，而postLayout则是动画执行后的状态，这样就可以确定对view该执行什么动画了。
 
 ## onMeasure
 ```
 protected void onMeasure(int widthSpec, int heightSpec) {
         if (mAdapterUpdateDuringMeasure) {
             eatRequestLayout();
+            // 该方法会消耗adapter的更新，然后计算我们想要运行何种动画。在onMeasure和dispatchLayout中都会调用这个方法。
             processAdapterUpdatesAndSetAnimationFlags();
 
             if (mState.mRunPredictiveAnimations) {
@@ -44,9 +45,7 @@ protected void onMeasure(int widthSpec, int heightSpec) {
         mState.mInPreLayout = false; // clear
     }
 ```
-`mAdapterUpdateDuringMeasure`显然是和adpater更新时有关的。
-
-在RV的内部类`RecyclerViewDataObserver`中
+`mAdapterUpdateDuringMeasure`显然是和adpater更新时有关的。在RV的内部类`RecyclerViewDataObserver`中
 
 ```
 void triggerUpdateProcessor() {
@@ -58,8 +57,43 @@ void triggerUpdateProcessor() {
      }
 }
 ```
-我们调用的各种onItemInsert/onItemRemove最终会触发此方法，这里会将`mAdapterUpdateDuringMeasure`设置为true。  
-接下来是从adapter中获取item的count并赋值给mState的mItemCount。mState是`State`(RecyclerView的静态内部类)的实例。  
+我们调用的各种onItemInsert/onItemRemove最终会触发此方法，这里会将`mAdapterUpdateDuringMeasure`设置为true。然后request layout。接下来`processAdapterUpdatesAndSetAnimationFlags`方法
+
+```
+private void processAdapterUpdatesAndSetAnimationFlags() {
+		  // 当notifyDataSetChanged调用时，最终会在RecyclerViewDataObserver中的onChanged方法被设置为true。
+        if (mDataSetHasChangedAfterLayout) {
+            // Processing these items have no value since data set changed unexpectedly.
+            // Instead, we just reset it.
+            mAdapterHelper.reset();
+            markKnownViewsInvalid();
+            mLayout.onItemsChanged(this);
+        }
+        // simple animations are a subset of advanced animations (which will cause a
+        // pre-layout step)
+        // If layout supports predictive animations, pre-process to decide if we want to run them
+        // 如果mItemAnimator不为null，但是supportsPredictiveItemAnimations返回false，则使用simple item animations
+        // 也就是简单的faded in/out，反之supportsPredictiveItemAnimations为true，就会触发两次onLayoutChildren来确定
+        // 动画从哪里开始出现/消失
+        if (mItemAnimator != null && mLayout.supportsPredictiveItemAnimations()) {
+            mAdapterHelper.preProcess();
+        } else {
+            // 将所有的update直接应用
+            mAdapterHelper.consumeUpdatesInOnePass();
+        }
+        boolean animationTypeSupported = (mItemsAddedOrRemoved && !mItemsChanged) ||
+                (mItemsAddedOrRemoved || (mItemsChanged && supportsChangeAnimations()));
+        mState.mRunSimpleAnimations = mFirstLayoutComplete && mItemAnimator != null &&
+                (mDataSetHasChangedAfterLayout || animationTypeSupported ||
+                        mLayout.mRequestedSimpleAnimations) &&
+                (!mDataSetHasChangedAfterLayout || mAdapter.hasStableIds());
+        mState.mRunPredictiveAnimations = mState.mRunSimpleAnimations &&
+                animationTypeSupported && !mDataSetHasChangedAfterLayout &&
+                predictiveItemAnimationsEnabled();
+    }
+```
+
+回到`onMeasure`，接下来是从adapter中获取item的count并赋值给mState的mItemCount。mState是`State`(RecyclerView的静态内部类)的实例。  
 
 ### State
 `State`中包含了RV的很多有用信息，可以在各个组件中传递`State`对象，根据需要获取相应的信息。而且可以通过resource id作为key，存储任意数据。
@@ -77,7 +111,7 @@ public void onMeasure(Recycler recycler, State state, int widthSpec, int heightS
        mRecyclerView.defaultOnMeasure(widthSpec, heightSpec);
 }
 ```
-这里还是RV的默认实现。
+这里是使用宿主RV的实现。Exactly和At most当做一样处理，Unspecified也会使用最小尺寸。
 
 ```
 	private void defaultOnMeasure(int widthSpec, int heightSpec) {
