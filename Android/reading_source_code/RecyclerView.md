@@ -10,58 +10,88 @@
 
 ## onMeasure
 ```
-protected void onMeasure(int widthSpec, int heightSpec) {
-        if (mAdapterUpdateDuringMeasure) {
-            eatRequestLayout();
-            // 该方法会消耗adapter的更新，然后计算我们想要运行何种动画。在onMeasure和dispatchLayout中都会调用这个方法。
-            processAdapterUpdatesAndSetAnimationFlags();
-
-            if (mState.mRunPredictiveAnimations) {
-                // TODO: try to provide a better approach.
-                // When RV decides to run predictive animations, we need to measure in pre-layout
-                // state so that pre-layout pass results in correct layout.
-                // On the other hand, this will prevent the layout manager from resizing properly.
-                mState.mInPreLayout = true;
-            } else {
-                // consume remaining updates to provide a consistent state with the layout pass.
-                mAdapterHelper.consumeUpdatesInOnePass();
-                mState.mInPreLayout = false;
-            }
-            mAdapterUpdateDuringMeasure = false;
-            resumeRequestLayout(false);
-        }
-
-        if (mAdapter != null) {
-            mState.mItemCount = mAdapter.getItemCount();
-        } else {
-            mState.mItemCount = 0;
-        }
+    protected void onMeasure(int widthSpec, int heightSpec) {
         if (mLayout == null) {
             defaultOnMeasure(widthSpec, heightSpec);
-        } else {
-            mLayout.onMeasure(mRecycler, mState, widthSpec, heightSpec);
+            return;
         }
-
-        mState.mInPreLayout = false; // clear
+        if (mLayout.mAutoMeasure) {
+            ......
+        } else {
+            ......
+        }
     }
 ```
-`mAdapterUpdateDuringMeasure`显然是和adpater更新时有关的。在RV的内部类`RecyclerViewDataObserver`中
+在设置`LayoutManager`之前使用`defaultOnMeasure`。
 
 ```
-void triggerUpdateProcessor() {
-     if (mPostUpdatesOnAnimation && mHasFixedSize && mIsAttached) {
-         ViewCompat.postOnAnimation(RecyclerView.this, mUpdateChildViewsRunnable);
-     } else {
-         mAdapterUpdateDuringMeasure = true;
-         requestLayout();
-     }
-}
+    void defaultOnMeasure(int widthSpec, int heightSpec) {
+        // calling LayoutManager here is not pretty but that API is already public and it is better
+        // than creating another method since this is internal.
+        final int width = LayoutManager.chooseSize(widthSpec,
+                getPaddingLeft() + getPaddingRight(),
+                ViewCompat.getMinimumWidth(this));
+        final int height = LayoutManager.chooseSize(heightSpec,
+                getPaddingTop() + getPaddingBottom(),
+                ViewCompat.getMinimumHeight(this));
+
+        setMeasuredDimension(width, height);
+    }
 ```
-我们调用的各种onItemInsert/onItemRemove最终会触发此方法，这里会将`mAdapterUpdateDuringMeasure`设置为true。然后request layout。接下来`processAdapterUpdatesAndSetAnimationFlags`方法
+这里就是简单的根据指定的参数返回一个大小。
+
+接下来`mAutoMeasure`，true则由RV处理，false则是`LayoutManager`自己来处理measure。framework为我们提供的LayoutManagers都是mAutoMeasure=true，在RV的`onMeasure`调用时，如果大小是确定的，那么RV会在调用`LayoutManager`的`onMeasure`方法后，直接return。  
 
 ```
-private void processAdapterUpdatesAndSetAnimationFlags() {
-		  // 当notifyDataSetChanged调用时，最终会在RecyclerViewDataObserver中的onChanged方法被设置为true。
+        if (mLayout.mAutoMeasure) {
+            final int widthMode = MeasureSpec.getMode(widthSpec);
+            final int heightMode = MeasureSpec.getMode(heightSpec);
+            final boolean skipMeasure = widthMode == MeasureSpec.EXACTLY
+                    && heightMode == MeasureSpec.EXACTLY;
+            mLayout.onMeasure(mRecycler, mState, widthSpec, heightSpec);
+            if (skipMeasure || mAdapter == null) {
+                return;
+            }
+            ......
+        }
+```
+但是只要宽高有一个不是EXACTLY，RV就会在`onMeasure`中开始layout，RV会处理adapter的update并决定是否执行predictive layout。如果需要执行，那么，会先进行pre layout(State.isPreLayout=true)，这时候的`getWidth`，`getHeight`都会返回上一次layout完的结果。然后再进行post layout(State.isPreLayout=false && State.isMeasuring=true)，两次layout结束后，RV会set measured dmension。之后的on measure调用，都只会是post layout。measure过程结束，`onLayout`方法被调用，RV会检查自身是否在measure过程中已经完成了layout计算，并复用之前的结果。当然如果在measure和layout之间，adapter update了或者measure的spec和最终的dimension不一致，还是会调用onLayoutChildren。
+
+```
+        if (mLayout.mAutoMeasure) {
+        	  .......
+            if (mState.mLayoutStep == State.STEP_START) {
+                dispatchLayoutStep1();
+            }
+            // set dimensions in 2nd step. Pre-layout should happen with old dimensions for
+            // consistency
+            mLayout.setMeasureSpecs(widthSpec, heightSpec);
+            mState.mIsMeasuring = true;
+            dispatchLayoutStep2();
+
+            // now we can get the width and height from the children.
+            mLayout.setMeasuredDimensionFromChildren(widthSpec, heightSpec);
+
+            // if RecyclerView has non-exact width and height and if there is at least one child
+            // which also has non-exact width & height, we have to re-measure.
+            if (mLayout.shouldMeasureTwice()) {
+                mLayout.setMeasureSpecs(
+                        MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+                mState.mIsMeasuring = true;
+                dispatchLayoutStep2();
+                // now we can get the width and height from the children.
+                mLayout.setMeasuredDimensionFromChildren(widthSpec, heightSpec);
+            }
+        }
+```
+
+`mLayoutStep`的初始值就是State.STEP_START，最开始会先执行`dispatchLayoutStep1`。
+
+### dispatchLayoutStep1
+```
+    private void processAdapterUpdatesAndSetAnimationFlags() {
+        // 当notifyDataSetChanged调用时，最终会在RecyclerViewDataObserver中的onChanged方法被设置为true
         if (mDataSetHasChangedAfterLayout) {
             // Processing these items have no value since data set changed unexpectedly.
             // Instead, we just reset it.
@@ -75,14 +105,12 @@ private void processAdapterUpdatesAndSetAnimationFlags() {
         // 如果mItemAnimator不为null，但是supportsPredictiveItemAnimations返回false，则使用simple item animations
         // 也就是简单的faded in/out，反之supportsPredictiveItemAnimations为true，就会触发两次onLayoutChildren来确定
         // 动画从哪里开始出现/消失
-        if (mItemAnimator != null && mLayout.supportsPredictiveItemAnimations()) {
+        if (predictiveItemAnimationsEnabled()) {
             mAdapterHelper.preProcess();
         } else {
-            // 将所有的update直接应用
             mAdapterHelper.consumeUpdatesInOnePass();
         }
-        boolean animationTypeSupported = (mItemsAddedOrRemoved && !mItemsChanged) ||
-                (mItemsAddedOrRemoved || (mItemsChanged && supportsChangeAnimations()));
+        boolean animationTypeSupported = mItemsAddedOrRemoved || mItemsChanged;
         mState.mRunSimpleAnimations = mFirstLayoutComplete && mItemAnimator != null &&
                 (mDataSetHasChangedAfterLayout || animationTypeSupported ||
                         mLayout.mRequestedSimpleAnimations) &&
@@ -92,6 +120,14 @@ private void processAdapterUpdatesAndSetAnimationFlags() {
                 predictiveItemAnimationsEnabled();
     }
 ```
+
+
+
+
+
+
+
+
 
 回到`onMeasure`，接下来是从adapter中获取item的count并赋值给mState的mItemCount。mState是`State`(RecyclerView的静态内部类)的实例。  
 
