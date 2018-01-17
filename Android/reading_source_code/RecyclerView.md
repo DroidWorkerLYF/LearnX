@@ -40,7 +40,7 @@
 ```
 这里就是简单的根据指定的参数返回一个大小。
 
-接下来`mAutoMeasure`，true则由RV处理，false则是`LayoutManager`自己来处理measure。framework为我们提供的LayoutManagers都是mAutoMeasure=true，在RV的`onMeasure`调用时，如果大小是确定的，那么RV会在调用`LayoutManager`的`onMeasure`方法后，直接return。  
+接下来`mAutoMeasure`，true则由RV处理，false则是`LayoutManager`自己来处理measure。framework为我们提供的LayoutManagers都是mAutoMeasure=true，在RV的`onMeasure`调用时，如果大小是确定的，那么RV会在调用`LayoutManager`的`onMeasure`方法(默认就是defaultOnMeasure)后，直接return。  
 
 ```
         if (mLayout.mAutoMeasure) {
@@ -61,15 +61,20 @@
         if (mLayout.mAutoMeasure) {
         	  .......
             if (mState.mLayoutStep == State.STEP_START) {
+                // 此方法会处理adapter的update，决定应该使用哪一种动画，保存当前views的信息，如果需要进行predictive layout，则保存响应信息。
                 dispatchLayoutStep1();
             }
             // set dimensions in 2nd step. Pre-layout should happen with old dimensions for
             // consistency
+            // 将width和height设置给layout manager但如果mode是MeasureSpec.UNSPECIFIED，并且不被允许，则会设置为0
+            // 此时的宽高还是旧数值
             mLayout.setMeasureSpecs(widthSpec, heightSpec);
             mState.mIsMeasuring = true;
+            // 此方法中会首先处理好所有的update，然后执行mLayout.onLayoutChildren(mRecycler, mState)
             dispatchLayoutStep2();
 
             // now we can get the width and height from the children.
+            // layout完成，根据child的计算结果和之前的widthSpec，heightSpec来setMeasuredDimension
             mLayout.setMeasuredDimensionFromChildren(widthSpec, heightSpec);
 
             // if RecyclerView has non-exact width and height and if there is at least one child
@@ -86,44 +91,85 @@
         }
 ```
 
-`mLayoutStep`的初始值就是State.STEP_START，最开始会先执行`dispatchLayoutStep1`。
+然后就是`mAutoMeasure`为false的情况了。
 
-### dispatchLayoutStep1
 ```
-    private void processAdapterUpdatesAndSetAnimationFlags() {
-        // 当notifyDataSetChanged调用时，最终会在RecyclerViewDataObserver中的onChanged方法被设置为true
-        if (mDataSetHasChangedAfterLayout) {
-            // Processing these items have no value since data set changed unexpectedly.
-            // Instead, we just reset it.
-            mAdapterHelper.reset();
-            markKnownViewsInvalid();
-            mLayout.onItemsChanged(this);
+            if (mHasFixedSize) {
+                mLayout.onMeasure(mRecycler, mState, widthSpec, heightSpec);
+                return;
+            }
+            // custom onMeasure
+            // measure过程中，adapter update了
+            if (mAdapterUpdateDuringMeasure) {
+                eatRequestLayout();
+                processAdapterUpdatesAndSetAnimationFlags();
+
+                if (mState.mRunPredictiveAnimations) {
+                    mState.mInPreLayout = true;
+                } else {
+                    // consume remaining updates to provide a consistent state with the layout pass.
+                    mAdapterHelper.consumeUpdatesInOnePass();
+                    mState.mInPreLayout = false;
+                }
+                mAdapterUpdateDuringMeasure = false;
+                resumeRequestLayout(false);
+            }
+
+            if (mAdapter != null) {
+                mState.mItemCount = mAdapter.getItemCount();
+            } else {
+                mState.mItemCount = 0;
+            }
+            eatRequestLayout();
+            mLayout.onMeasure(mRecycler, mState, widthSpec, heightSpec);
+            resumeRequestLayout(false);
+            mState.mInPreLayout = false; // clear
+```
+如果RV的大小是固定的，那么measure后直接return，在知道RV的大小不会受item影响的情况下，RV是可以做一些优化的。不过这种情况下RV的大小仍然可以改变，只要影响因素不依赖于item。其余情况就是调用layout manager自己实现的`onMeasure`了。
+
+
+## onLayout
+`onLayout`方法实际上只是调用了`dispatchLayout`方法。`dispatchLayout`就是对`layoutChildren`方法的包装，来处理layout导致的变化动画。源码中假设动画类型有五种 
+
+* PERSISTENT: item在layout前后都是可见的
+* REMOVED: 移除，item在layout前可见
+* ADDED: 增加，item在layout前不存在
+* DISAPPEARING: 消失，item仍然存在于数据集中，由于其他change的发生，在layout过程中，移除了屏幕，不可见了
+* APPEARING: 出现，item存在于数据集中，由于其他change的发生，在layout过程中，出现在了屏幕内，可见了
+
+这个方法会指出哪些item在layout前/后存在并推断出每个item属于上面五种状态的哪一种，然后设置动画。
+
+```
+    void dispatchLayout() {
+        if (mAdapter == null) {
+            Log.e(TAG, "No adapter attached; skipping layout");
+            // leave the state in START
+            return;
         }
-        // simple animations are a subset of advanced animations (which will cause a
-        // pre-layout step)
-        // If layout supports predictive animations, pre-process to decide if we want to run them
-        // 如果mItemAnimator不为null，但是supportsPredictiveItemAnimations返回false，则使用simple item animations
-        // 也就是简单的faded in/out，反之supportsPredictiveItemAnimations为true，就会触发两次onLayoutChildren来确定
-        // 动画从哪里开始出现/消失
-        if (predictiveItemAnimationsEnabled()) {
-            mAdapterHelper.preProcess();
+        if (mLayout == null) {
+            Log.e(TAG, "No layout manager attached; skipping layout");
+            // leave the state in START
+            return;
+        }
+        mState.mIsMeasuring = false;
+        if (mState.mLayoutStep == State.STEP_START) {
+            dispatchLayoutStep1();
+            mLayout.setExactMeasureSpecsFrom(this);
+            dispatchLayoutStep2();
+        } else if (mAdapterHelper.hasUpdates() || mLayout.getWidth() != getWidth() ||
+                mLayout.getHeight() != getHeight()) {
+            // First 2 steps are done in onMeasure but looks like we have to run again due to
+            // changed size.
+            mLayout.setExactMeasureSpecsFrom(this);
+            dispatchLayoutStep2();
         } else {
-            mAdapterHelper.consumeUpdatesInOnePass();
+            // always make sure we sync them (to ensure mode is exact)
+            mLayout.setExactMeasureSpecsFrom(this);
         }
-        boolean animationTypeSupported = mItemsAddedOrRemoved || mItemsChanged;
-        mState.mRunSimpleAnimations = mFirstLayoutComplete && mItemAnimator != null &&
-                (mDataSetHasChangedAfterLayout || animationTypeSupported ||
-                        mLayout.mRequestedSimpleAnimations) &&
-                (!mDataSetHasChangedAfterLayout || mAdapter.hasStableIds());
-        mState.mRunPredictiveAnimations = mState.mRunSimpleAnimations &&
-                animationTypeSupported && !mDataSetHasChangedAfterLayout &&
-                predictiveItemAnimationsEnabled();
+        dispatchLayoutStep3();
     }
 ```
-
-
-
-
+如果layout step还是`STEP_START`那么就按顺序去调用step1，step2。如果之前onMeasure已经执行过layout，但是adapter更新了，或者RV的宽高有变化，那么在此执行step2。最后一定会执行step3。step3会负责保存views的动画信息，并且触发动画，并且做一些必要的清理。最后会有一个onLayoutCompleted的回调。
 
 
 
