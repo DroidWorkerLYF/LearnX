@@ -375,3 +375,5 @@ void stopSmoothScroller() {
 [](https://sanjay-f.github.io/2015/12/23/源码探索系列10---替代Listview的RecycleView/)  
 [](http://www.jianshu.com/p/115c7bba2d1e)  
 [](http://www.jianshu.com/p/9ddfdffee5d3)
+[](http://blog.csdn.net/qq_36523667/article/details/78750805)
+[](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/0630/4400.html)

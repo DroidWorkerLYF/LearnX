@@ -274,9 +274,13 @@ Android 的evelvation一个来自屏幕顶部斜向下方的光线，一个是�
 ```
 	task xxx << {
 		do something
-		dependsOn `assembleRelease`
+		dependsOn 'assembleRelease'
 	}
 ```
 
 ### How to detect Android application open and close: Background and Foreground events
 [链接](https://android.jlelse.eu/how-to-detect-android-application-open-and-close-background-and-foreground-events-1b4713784b57)
+
+### Mastering Shadows in Android
+[链接](https://android.jlelse.eu/mastering-shadows-in-android-e883ad2c9d5b)  
+讲解了material design下阴影的一些基本知识。
