@@ -188,7 +188,31 @@
 这里又出现了一个新的概念，`ItemDecoration`。使用`ItemDecoration`我们可以在绘制和布局时为指定的item视图增加额外的偏移量，所以这可以很方便的绘制分割线，高亮某一项，或者对items进行分组等等。我们添加的`ItemDecoration`会按照添加的顺序依次绘制。在item被绘制之前会调用`ItemDecoration`的`onDraw`方法，在item绘制之后会调用`onDrawOver`方法。所以上面的源码中，RV的`onDraw`方法调用了`ItemDecoration`的`onDraw`。`onDraw`方法绘制的内容位于item视图的下面，`onDrawOver`则位于上面。
  
 ### Recycle
-在layout的step2中会调用`mLayout.onLayoutChildren(mRecycler, mState);`，显然这个`mRecycler`是和复用视图有关的了。
+RV当然也离不开视图的复用，又是如何实现的？在layout的step2中会调用`mLayout.onLayoutChildren(mRecycler, mState);`，显然这个`mRecycler`是和复用视图有关的了。  
+
+> A Recycler is responsible for managing scrapped or detached item views for reuse.
+
+scrapped view是指还attached在RV上，但是被标记为可以移除或复用的视图。  
+
+如果要被复用的视图被标记为dirty，那么会被rebind，不然就可以直接拿来用。Clean的view如果需要被`isLayoutRequested`为true，则可能被repositioned。
+
+这里以`LinearLayoutManager`为例，看一下：  
+
+#### LinearLayout onLayoutChildren
+源码中是这样写的：
+
+>         // layout algorithm:
+        // 1) by checking children and other variables, find an anchor coordinate and an anchor
+        //  item position.
+        // 2) fill towards start, stacking from bottom
+        // 3) fill towards end, stacking from top
+        // 4) scroll to fulfill requirements like stack from bottom.
+        // create layout state
+
+首先找到一个锚点坐标及其position，以这个点向起始方向填充，以这个点向结束方向填充。  
+
+在`onLayoutChildren`中调用`detachAndScrapAttachedViews(recycler)`，如果viewholder的数据不匹配&&viewholder没有被移除&&!adapter.hasStableIds，那么会remove这个view，否则scrap。
+
 
 ### 参考
 [掌握RecyclerView动画不得不看的文章](http://www.jianshu.com/p/3be9a519fe79)  
