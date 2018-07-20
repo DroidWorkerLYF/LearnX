@@ -128,3 +128,4 @@ GitHubService service = retrofit.create(GitHubService.class);
 Call<List<Repo>> repos = service.listRepos("octocat")
 ```
 最后这里可以同步或者异步的去请求网络。就是通过动态代理调用到了实际的执行方法。
+
